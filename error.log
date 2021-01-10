@@ -1,0 +1,357 @@
+make[1]: Entering directory '/workspaces/android_kernel_realme_mt6781/out'
+  HOSTCC  scripts/basic/fixdep
+  GEN     ./Makefile
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/zconf.tab.o
+  HOSTLD  scripts/kconfig/conf
+scripts/kconfig/conf  --syncconfig Kconfig
+arch/Kconfig:519:warning: defaults for choice values not supported
+
+WARNING: unmet direct dependencies detected for MTK_CACHE_PARITY_CHECK
+  Depends on [n]: MTK_SDA [=n]
+  Selected by [y]:
+  - MACH_MT6781 [=y]
+
+WARNING: unmet direct dependencies detected for MTK_CACHE_PARITY_CHECK
+  Depends on [n]: MTK_SDA [=n]
+  Selected by [y]:
+  - MACH_MT6781 [=y]
+  GEN     ./Makefile
+for i in ../arch/arm64/boot/dts/mediatek/oplus6781_21684.dts ../arch/arm64/boot/dts/mediatek/oplus6781_21690.dts; do \
+	base_prj=`grep -m 1 '#include [<\"].*\/cust\.dtsi[>\"]' $i | sed 's/#include [<"]//g'\
+       	| sed 's/\/cust\.dtsi[>"]//g' | sed 's/\/\*//g' | sed 's/\*\///g' | sed 's/ //g'`\
+	prj_path=./arch/arm64/boot/dts/$base_prj ;\
+	dws_path=../drivers/misc/mediatek/dws/mt6785/$base_prj.dws ;\
+	if [ -f $dws_path ] ; then \
+		mkdir -p $prj_path ;\
+		 ../tools/dct/DrvGen.py $dws_path $prj_path $prj_path cust_dtsi;\
+	fi \
+done
+rm -f dtboimg.cfg.tmp
+echo /workspaces/android_kernel_realme_mt6781/out/arch/arm64/boot/dts/mediatek/oplus6781_21684.dtbo >>dtboimg.cfg.tmp; echo " id=0" >>dtboimg.cfg.tmp;  echo /workspaces/android_kernel_realme_mt6781/out/arch/arm64/boot/dts/mediatek/oplus6781_21690.dtbo >>dtboimg.cfg.tmp; echo " id=1" >>dtboimg.cfg.tmp; 
+rm -f dtbimg.cfg.tmp
+touch dtboimg.cfg.tmp
+if ! cmp -s dtboimg.cfg.tmp dtboimg.cfg; then \
+	mv dtboimg.cfg.tmp dtboimg.cfg; \
+else \
+	rm dtboimg.cfg.tmp; \
+fi
+echo /workspaces/android_kernel_realme_mt6781/out/arch/arm64/boot/mtk.dtb >>dtbimg.cfg.tmp; echo " id=0" >>dtbimg.cfg.tmp; 
+touch dtbimg.cfg.tmp
+if ! cmp -s dtbimg.cfg.tmp dtbimg.cfg; then \
+	mv dtbimg.cfg.tmp dtbimg.cfg; \
+else \
+	rm dtbimg.cfg.tmp; \
+fi
+*GPU defined GPU BM QoS 2.0-419
+$GED: CONFIG_MTK_PLATFORM is ["mt6785"]
+  Using .. as source for kernel
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+../drivers/misc/mediatek/base/power/ppm_v3/src/Makefile:110: USE_PPM_CPI
+ BT_ENABLE_LOW_POWER_DEBUG=
+../drivers/misc/mediatek/connectivity/common/Kbuild:202: KERNEL_VERSION_SUPPORT_CHIPID_LIST=[6781]
+ConnFem: Customer load
+[fm_drv:Kbuild] M = 
+[fm_drv:Kbuild] CFG_FM_PLAT = mt6631_6635
+[fm_drv:Kbuild] CFG_BUILD_CONNAC2 = 
+[fm_drv:Kbuild] CFG_FM_CHIP_ID = 6781
+[fm_drv:Kbuild] CFG_FM_CHIP = mt6631
+[fm_drv:Kbuild] src = drivers/misc/mediatek/connectivity/fmradio
+[fm_drv:Kbuild] KO_CODE_PATH = ../drivers/misc/mediatek/connectivity/fmradio
+../drivers/misc/mediatek/connectivity/gps/Makefile:17: GPS_CHIP_ID != common
+CONFIG_MTK_PLATFORM_CCCI := mt6785
+CONFIG_MTK_PLATFORM_CCCI := "mt6785"
+MTK_PLATFORM_CCCI := mt6785
+************  drivers/trusty/mtee-kree mk ************
+imgsensor drv by common ../common/v1_1/ov48b_mipi_raw/ ../common/v1_1/s5k3p9sp_mipi_raw/ ../common/v1_1/s5k3m5sx_mipi_raw/ ../common/v1_1/imx481_mipi_raw/ ../common/v1_1/imx519_mipi_raw/ ../common/v1_1/imx398_mipi_raw/ ../common/v1_1/imx350_mipi_raw/ ../common/v1_1/s5k2l7_mipi_raw/ ../common/v1_1/imx386_mipi_raw/ ../common/v1_1/imx386_mipi_mono/ ../common/v1_1/s5k2t7sp_mipi_raw/ ../common/v1_1/imx499_mipi_raw/ ../common/v1_1/s5k2lqsx_mipi_raw/ ../common/v1_1/s5k4h7_mipi_raw/ ../common/v1_1/s5kjn1_mipi_raw_21690/ ../common/v1_1/ov64b40_mipi_raw_21690/ ../common/v1_1/hi1634q_mipi_raw_21690/ ../common/v1_1/s5k3p9sp_mipi_raw_21690/ ../common/v1_1/gc02m1hlt_mipi_raw_21690/ ../common/v1_1/gc02m1shine_mipi_raw_21690/ ../common/v1_1/ov02b1b_mipi_mono_21690/ ../common/v1_1/gc02m1bsy_mipi_raw_21690/
+imgsensor drv by platform imx586_mipi_raw/
+imgsensor drv by platform 
+imgsensor subdir-ccflags-y = -I../drivers/misc/mediatek/imgsensor/src/common/v1_1 -I../drivers/misc/mediatek/mmdvfs -I../drivers/i2c/busses/ -I../drivers/misc/mediatek/imgsensor/src/mt6781/camera_hw -I../drivers/misc/mediatek/imgsensor/src/common/v1_1/camera_hw -DSENINF_N3D_SUPPORT -I../drivers/misc/mediatek/imgsensor/src/mt6781/seninf/
+******** Start to build met_drv for mt6781 ********
+../drivers/misc/mediatek/met_drv_v2/Makefile:44: Not building met.ko due to CONFIG_MTK_MET_PLF is not set to m, build met default
+******** Start to build met_drv ********
+../drivers/misc/mediatek/met_drv_v3/Kbuild:32: not support CONFIG_MTK_MET="", build met default
+  CHK     kernel/kheaders_data.tar.xz
+../drivers/tee/gud/Makefile.include:2: "CONFIG_MTK_PLATFORM: "mt6785""
+../drivers/tee/gud/Makefile.include:3: "CONFIG_TRUSTONIC_TEE_VERSION: "500""
+ION:enable mtk ion
+*GPU defined GPU BM QoS 2.0-419
+$GED: CONFIG_MTK_PLATFORM is ["mt6785"]
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/platform/mtk_platform_common/mtk_platform_common.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/platform/mtk_platform_common/mtk_gpu_dvfs.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/platform/mtk_platform_common/mtk_gpu_power_sspm_ipi.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_cache_policy.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_mem.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_mem_pool_group.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_native_mgm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_ctx_sched.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_gpuprops.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_pm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_config.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_softjobs.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_hw.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_debug.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_gpu_memory_debugfs.o
+../drivers/misc/mediatek/base/power/ppm_v3/src/Makefile:110: USE_PPM_CPI
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_mem_linux.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_core_linux.o
+../drivers/tee/gud/Makefile.include:2: "CONFIG_MTK_PLATFORM: "mt6785""
+../drivers/tee/gud/Makefile.include:3: "CONFIG_TRUSTONIC_TEE_VERSION: "500""
+ BT_ENABLE_LOW_POWER_DEBUG=
+../drivers/misc/mediatek/connectivity/common/Kbuild:202: KERNEL_VERSION_SUPPORT_CHIPID_LIST=[6781]
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_mem_profile_debugfs.o
+ConnFem: Customer load
+[fm_drv:Kbuild] M = 
+[fm_drv:Kbuild] CFG_FM_PLAT = mt6631_6635
+[fm_drv:Kbuild] CFG_BUILD_CONNAC2 = 
+[fm_drv:Kbuild] CFG_FM_CHIP_ID = 6781
+[fm_drv:Kbuild] CFG_FM_CHIP = mt6631
+[fm_drv:Kbuild] src = drivers/misc/mediatek/connectivity/fmradio
+[fm_drv:Kbuild] KO_CODE_PATH = ../drivers/misc/mediatek/connectivity/fmradio
+../drivers/misc/mediatek/connectivity/gps/Makefile:17: GPS_CHIP_ID != common
+../drivers/misc/mediatek/connectivity/gps/Makefile:232: is connsys_chip judge by CONFIG_MTK_COMBO_CHIP
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_disjoint_events.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_gator_api.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_debug_mem_view.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_smc.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_mem_pool.o
+CONFIG_MTK_PLATFORM_CCCI := mt6785
+CONFIG_MTK_PLATFORM_CCCI := "mt6785"
+MTK_PLATFORM_CCCI := mt6785
+CONFIG_MTK_PLATFORM := mt6785
+CONFIG_MTK_PLATFORM := "mt6785"
+MTK_PLATFORM := mt6785
+CONFIG_MTK_PLATFORM := mt6785
+CONFIG_MTK_PLATFORM := "mt6785"
+MTK_PLATFORM := mt6785
+************  drivers/trusty/mtee-kree mk ************
+../drivers/tee/gud/Makefile.include:2: "CONFIG_MTK_PLATFORM: "mt6785""
+../drivers/tee/gud/Makefile.include:3: "CONFIG_TRUSTONIC_TEE_VERSION: "500""
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_mem_pool_debugfs.o
+imgsensor drv by common ../common/v1_1/ov48b_mipi_raw/ ../common/v1_1/s5k3p9sp_mipi_raw/ ../common/v1_1/s5k3m5sx_mipi_raw/ ../common/v1_1/imx481_mipi_raw/ ../common/v1_1/imx519_mipi_raw/ ../common/v1_1/imx398_mipi_raw/ ../common/v1_1/imx350_mipi_raw/ ../common/v1_1/s5k2l7_mipi_raw/ ../common/v1_1/imx386_mipi_raw/ ../common/v1_1/imx386_mipi_mono/ ../common/v1_1/s5k2t7sp_mipi_raw/ ../common/v1_1/imx499_mipi_raw/ ../common/v1_1/s5k2lqsx_mipi_raw/ ../common/v1_1/s5k4h7_mipi_raw/ ../common/v1_1/s5kjn1_mipi_raw_21690/ ../common/v1_1/ov64b40_mipi_raw_21690/ ../common/v1_1/hi1634q_mipi_raw_21690/ ../common/v1_1/s5k3p9sp_mipi_raw_21690/ ../common/v1_1/gc02m1hlt_mipi_raw_21690/ ../common/v1_1/gc02m1shine_mipi_raw_21690/ ../common/v1_1/ov02b1b_mipi_mono_21690/ ../common/v1_1/gc02m1bsy_mipi_raw_21690/
+imgsensor drv by platform imx586_mipi_raw/
+imgsensor drv by platform 
+imgsensor subdir-ccflags-y =  -I../drivers/misc/mediatek/imgsensor/src/common/v1_1 -I../drivers/misc/mediatek/mmdvfs -I../drivers/i2c/busses/ -I../drivers/misc/mediatek/imgsensor/src/mt6781/camera_hw -I../drivers/misc/mediatek/imgsensor/src/common/v1_1/camera_hw -DSENINF_N3D_SUPPORT -I../drivers/misc/mediatek/imgsensor/src/mt6781/seninf/
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_as_fault_debugfs.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_regs_history_debugfs.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_dvfs_debugfs.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_trace_gpu_mem.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_fence_ops.o
+******** Start to build met_drv for mt6781 ********
+../drivers/misc/mediatek/met_drv_v2/Makefile:44: Not building met.ko due to CONFIG_MTK_MET_PLF is not set to m, build met default
+******** Start to build met_drv ********
+../drivers/misc/mediatek/met_drv_v3/Kbuild:32: not support CONFIG_MTK_MET="", build met default
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_sync_file.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_sync_common.o
+../drivers/tee/gud/Makefile.include:2: "CONFIG_MTK_PLATFORM: "mt6785""
+../drivers/tee/gud/Makefile.include:3: "CONFIG_TRUSTONIC_TEE_VERSION: "500""
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_hwcnt_backend_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_dummy_job_wa.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_debug_job_fault.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_event.o
+ION:enable mtk ion
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_jd.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_js.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_js_ctx_attr.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_kinstr_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mali_kbase_fence.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/context/mali_kbase_context.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/context/backend/mali_kbase_context_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/debug/mali_kbase_debug_ktrace.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/debug/backend/mali_kbase_debug_ktrace_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/device/mali_kbase_device.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/device/mali_kbase_device_hw.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/device/backend/mali_kbase_device_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/device/backend/mali_kbase_device_hw_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_cache_policy_backend.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_gpuprops_backend.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_irq_linux.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_js_backend.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_backend.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_driver.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_metrics.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_ca.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_always_on.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_coarse_demand.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_adaptive.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_pm_policy.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_time.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_l2_mmu_config.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_clk_rate_trace_mgr.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_instr_backend.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_jm_as.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_debug_job_fault_backend.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_jm_hw.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/backend/gpu/mali_kbase_jm_rb.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mmu/mali_kbase_mmu.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mmu/mali_kbase_mmu_hw_direct.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mmu/mali_kbase_mmu_mode_aarch64.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/mmu/backend/mali_kbase_mmu_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/tl/mali_kbase_timeline.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/tl/mali_kbase_timeline_io.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/tl/mali_kbase_tlstream.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/tl/mali_kbase_tracepoints.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/tl/backend/mali_kbase_timeline_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/gpu/mali_kbase_gpu.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/gpu/backend/mali_kbase_gpu_fault_jm.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/thirdparty/mali_kbase_mmap.o
+  CC      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/platform/mt6781/mali_kbase_config_mt6781.o
+  AR      drivers/gpu/mediatek/gpu_mali/mali_valhall/mali-r32p1/drivers/gpu/arm/midgard/built-in.a
+  AR      drivers/gpu/mediatek/built-in.a
+  AR      drivers/gpu/built-in.a
+  AR      drivers/built-in.a
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+  AR      init/built-in.a
+  AR      built-in.a
+  MODPOST vmlinux.o
+  KSYM    .tmp_kallsyms1.o
+  KSYM    .tmp_kallsyms2.o
+  LD      vmlinux
+  SORTEX  vmlinux
+  SYSMAP  System.map
+  OBJCOPY arch/arm64/boot/Image
+  Building modules, stage 2.
+  MODPOST 17 modules
+  GZIP    arch/arm64/boot/Image.gz
+  DTC     arch/arm64/boot/dts/mediatek/mt6781.dtb
+  DTC     arch/arm64/boot/dts/mediatek/oplus6781_21684.dtbo
+  DTC     arch/arm64/boot/dts/mediatek/oplus6781_21690.dtbo
+In file included from ../arch/arm64/boot/dts/mediatek/mt6781.dts:19:
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:397:9: warning: 'PINMUX_GPIO61__FUNC_IO_JTAG_TDI' macro redefined [-Wmacro-redefined]
+  397In file included from ../arch/arm64/boot/dts/mediatek/oplus6781_21684.dts:17:
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:397:9: warning: 'PINMUX_GPIO61__FUNC_IO_JTAG_TDI' macro redefined [-Wmacro-redefined]
+  397 | #define PINMUX_In file included from ../arch/arm64/boot/dts/mediatek/oplus6781_21690.dts:17:
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:397G:P9I: O61__warning: FUNC'PINMUX_GPIO61__FUNC_IO_JTAG_TDI' macro redefined [-Wmacro-redefined]_
+IO_JTAG_TDI (MTK_  P397I | N#_dNeOf(ine PINMUX_6G1P)I O|6 17_)_
+F      U| N        ^C
+_IO_JTAG_TDI (MTK_PIN_N../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hO:(3966:19):  |note:  previous definition is here7)
+      |         ^
+
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h  :396396 | :#9d:e fnote: iprevious definition is heren
+e PI  N396M | U#Xdefine PINMU_XG_PGIPOI6O16_1__F_UFNUCN_CI_OI_OJ_TJATGA_G_TDI (MTK_TPDIIN _(NMOT(K6_1P)I N|_ N6O)(
+6      1|         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:)406 :|9 :6 )warning: 
+'PINMUX_GPIO62__FUNC_IO_JTAG_TRSTN' macro redefined [-Wmacro-redefined]      
+|         ^
+  406 | #de../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hf:i406ne PINMUX_GP:I9O:6 2warning: _'PINMUX_GPIO62__FUNC_IO_JTAG_TRSTN' macro redefined [-Wmacro-redefined]_
+FUNC_  I406O | _#JdTeAfGi_nTeRSTN (MTK_ PPIINN_MNUOX(_6G2P)I O|6 27_)_
+F      U|         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:405:9: Nnote: previous definition is hereC
+_IO_  J405T | A#Gd_eTfRiSnTeN  P(IMNTMKUX_GPIO62___FPUINNC__NIOO(_6J2T)A G|_ T7R)S
+T      N|          ^(
+MT../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hK_PIN_NO(62:)405 :|9 :6 )note: 
+previous definition is here      
+|         ^
+  405 | #defi../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:415:9: warning: 'PINMUX_GPIO63__FUNC_IO_JTAG_TCK' macro redefined [-Wmacro-redefined]
+ne   P415I | N#MdUeXf_iGnPeI OP6I2N_M_UFXU_GPIO63__FUNNCC__IIOO__JJTTAAGG__TTCRKS T(NM T(KM_TPKI_NP_INNO_(N6O3()6 2| 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:414): 9|:  6note: )previous definition is here
+
+      |         ^  
+414 | #define../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h :P415I:N9M:U X_GPIO63__FUwarning: N'PINMUX_GPIO63__FUNC_IO_JTAG_TCK' macro redefined [-Wmacro-redefined]C
+_IO_  J415T | A#Gd_eTfCiKn e( MPTK_PIN_NO(6I3N)M U|X _6G)P
+I      O| 6        ^3
+__FUNC_../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hI:O424:9: warning: 'PINMUX_GPIO64__FUNC_IO_JTAG_TDO' macro redefined [-Wmacro-redefined]
+  _424J | T#AdGe_fTiCnKe  (PMITNKM_UPXI_NG_PNIOO(664__FUNC_IO_3J)T A|G _7T)D
+O       | (        ^M
+T../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hK:_414P:I9N:_NO(64) | 7) 
+note:       previous definition is here| 
+        ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h  :414423 | :#9d:e fnote: iprevious definition is heren
+e PINMUX_GPIO63__  423 | #define PFIUNNMCU_XI_OG_PJITOA6G4__T_CFKU N(C_IO_JTAG_TMDTOK _(PMITNK__NPOI(N6_3N)O (|6 46)) | 6)
+      |         ^
+
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h::424433::99::  warning: 'PINMUX_GPIO65__FUNC_IO_JTAG_TMS' macro redefined [-Wmacro-redefined]
+  433 | #dwarning: e'PINMUX_GPIO64__FUNC_IO_JTAG_TDO' macro redefined [-Wmacro-redefined]f
+ine P  I424N | M#UdXe_fGiPnIeO 6P5__FUNC_IO_IJNTMAUGX__TGMPSI O(6M4T_K__FPUINNC__NIO(65) | 7)
+      | O        ^_
+JT../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hA:G432_:T9D:O  note: (previous definition is hereM
+TK_P  I432N | _#define PINNMOU(X6_4G)P I|O 675)_
+_      F| U        ^N
+C_../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hI:O423_:J9T:AG_TMS (MTK _note: Pprevious definition is hereI
+N_N  O423( | 6#5d)e f|i n6e) 
+P      I| N        ^M
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hU:X442_:G9P:I Owarning: 6'PINMUX_GPIO66__FUNC_DAP_MD32_SWD' macro redefined [-Wmacro-redefined]4
+__FU  N442C | _#Idefine PINMOU_XJ_TGAPGI_OT6D6O_ _(FMUTNKC__PDIANP__MD32_SWD (NMOT(K6_4P)I N|_ N6O)(
+6      6| )        ^ 
+| 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:441:9: note: previous definition is here
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:  433441: | 9#:d warning: 'PINMUX_GPIO65__FUNC_IO_JTAG_TMS' macro redefined [-Wmacro-redefined]
+  433efine PINMUX_ | G#PdIeOf6i6ne PINMUX_G_P_IFOUNC_DAP_MD3625__S_WFDU N(CM_IO_JTAG_TTKM_PIN_NO(66)S  |( M6T)K
+_      P| IN_NO(65)        ^ 
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:451:9|:  7warning: )'PINMUX_GPIO67__FUNC_DAP_MD32_SWCK' macro redefined [-Wmacro-redefined]
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:432:
+9:   451 | #definenote:  previous definition is hereP
+INMU  X432_ | G#define PPIINOM6U7__FUNC_DAPX__MGDP3IO65__FUN2C_SWCK (MTK_P_IINO__NJOT(AG_TMS (M6T7K) | 7)
+      |         ^
+_P../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.hI:N450_:N9O:( 65) | 6)
+note:       previous definition is here| 
+  450 | #defi        ^n
+e PIN../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:M442U:X9_:GPIO67__FUNC _warning: D'PINMUX_GPIO66__FUNC_DAP_MD32_SWD' macro redefined [-Wmacro-redefined]A
+P_MD  442 | #defi3n2e_SWCK (MTK_ PPIINN_MNUOX_GPIO66_(_6F7) | 6)
+      |         ^
+UNC_DAP_MD32_SWD (MTK_PIN_NO(66) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:441:9: note: previous definition is here
+  441 | #define PINMUX_GPIO66__FUNC_DAP_MD32_SWD (MTK_PIN_NO(66) | 6)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:451:9: warning: 'PINMUX_GPIO67__FUNC_DAP_MD32_SWCK' macro redefined [-Wmacro-redefined]
+  451 | #define PINMUX_GPIO67__FUNC_DAP_MD32_SWCK (MTK_PIN_NO(67) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:450:9: note: previous definition is here
+  450 | #define PINMUX_GPIO67__FUNC_DAP_MD32_SWCK (MTK_PIN_NO(67) | 6)
+      |         ^
+ | #define PINMUX_GPIO61__FUNC_IO_JTAG_TDI (MTK_PIN_NO(61) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:396:9: note: previous definition is here
+  396 | #define PINMUX_GP7 warnings generated.
+IO61__FUNC_IO_JTA7 warnings generated.
+G_TDI (MTK_PIN_NO(61) | 6)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:406:9: warning: 'PINMUX_GPIO62__FUNC_IO_JTAG_TRSTN' macro redefined [-Wmacro-redefined]
+  406 | #define PINMUX_GPIO62__FUNC_IO_JTAG_TRSTN (MTK_PIN_NO(62) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:405:9: note: previous definition is here
+  405 | #define PINMUX_GPIO62__FUNC_IO_JTAG_TRSTN (MTK_PIN_NO(62) | 6)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:415:9: warning: 'PINMUX_GPIO63__FUNC_IO_JTAG_TCK' macro redefined [-Wmacro-redefined]
+  415 | #define PINMUX_GPIO63__FUNC_IO_JTAG_TCK (MTK_PIN_NO(63) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:414:9: note: previous definition is here
+  414 | #define PINMUX_GPIO63__FUNC_IO_JTAG_TCK (MTK_PIN_NO(63) | 6)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:424:9: warning: 'PINMUX_GPIO64__FUNC_IO_JTAG_TDO' macro redefined [-Wmacro-redefined]
+  424 | #define PINMUX_GPIO64__FUNC_IO_JTAG_TDO (MTK_PIN_NO(64) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:423:9: note: previous definition is here
+  423 | #define PINMUX_GPIO64__FUNC_IO_JTAG_TDO (MTK_PIN_NO(64) | 6)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:433:9: warning: 'PINMUX_GPIO65__FUNC_IO_JTAG_TMS' macro redefined [-Wmacro-redefined]
+  433 | #define PINMUX_GPIO65__FUNC_IO_JTAG_TMS (MTK_PIN_NO(65) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:432:9: note: previous definition is here
+  432 | #define PINMUX_GPIO65__FUNC_IO_JTAG_TMS (MTK_PIN_NO(65) | 6)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:442:9: warning: 'PINMUX_GPIO66__FUNC_DAP_MD32_SWD' macro redefined [-Wmacro-redefined]
+  442 | #define PINMUX_GPIO66__FUNC_DAP_MD32_SWD (MTK_PIN_NO(66) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:441:9: note: previous definition is here
+  441 | #define PINMUX_GPIO66__FUNC_DAP_MD32_SWD (MTK_PIN_NO(66) | 6)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:451:9: warning: 'PINMUX_GPIO67__FUNC_DAP_MD32_SWCK' macro redefined [-Wmacro-redefined]
+  451 | #define PINMUX_GPIO67__FUNC_DAP_MD32_SWCK (MTK_PIN_NO(67) | 7)
+      |         ^
+../scripts/dtc/include-prefixes/dt-bindings/pinctrl/mt6781-pinfunc.h:450:9: note: previous definition is here
+  450 | #define PINMUX_GPIO67__FUNC_DAP_MD32_SWCK (MTK_PIN_NO(67) | 6)
+      |         ^
+7 warnings generated.
+  CAT     arch/arm64/boot/Image.gz-dtb
+make[1]: Leaving directory '/workspaces/android_kernel_realme_mt6781/out'
