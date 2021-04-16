@@ -7,6 +7,8 @@ comment "Storage Block Tag"
 config MTK_BLOCK_TAG
 	bool "Storage Block Tag"
 	depends on BLOCK
+	depends on (MTK_GMO_RAM_OPTIMIZE && MTK_ENG_BUILD) || \
+		   !MTK_GMO_RAM_OPTIMIZE
 	default n
 	help
 	  Enable block tagging at block driver, tag requester pid to
@@ -14,4 +16,3 @@ config MTK_BLOCK_TAG
 	  IO statistics of each process. The Block Tag also provides
 	  utility functions to MMC/UFS Block IO log, such as throughput
 	  calculation, log printing, and ring trace handling.
-
