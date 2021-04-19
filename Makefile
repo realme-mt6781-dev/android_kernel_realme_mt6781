@@ -455,6 +455,7 @@ KBUILD_LDFLAGS :=
 TARGET_BUILD_VARIANT := user
 GCC_PLUGINS_CFLAGS :=
 CLANG_FLAGS :=
+TARGET_BUILD_VARIANT := user
 
 #ifdef OPLUS_FEATURE_MEMLEAK_DETECT
 ifeq ($(AGING_DEBUG_MASK),1)
@@ -486,7 +487,6 @@ export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_LDFLAGS_MODULE
 export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL
 export KBUILD_ARFLAGS
 export TARGET_BUILD_VARIANT
-
 # When compiling out-of-tree modules, put MODVERDIR in the module
 # tree rather than in the kernel tree. The kernel tree might
 # even be read-only.
