@@ -130,12 +130,12 @@ static int mcu_status = 0;
 extern bool oplus_is_power_off_charging(struct oplus_vooc_chip *chip);
 extern bool oplus_voocphy_chip_is_null(void);
 
-#define charger_xlog_printk(num, fmt, ...)                                                                             \
-	do {                                                                                                           \
-		if (enable_charger_log >= (int)num) {                                                                  \
-			printk(KERN_NOTICE pr_fmt("[OPLUS_CHG][%s]" fmt), __func__, ##__VA_ARGS__);                    \
-		}                                                                                                      \
-	} while (0)
+#define charger_xlog_printk(num, fmt, ...) \
+		do { \
+			if (enable_charger_log >= (int)num) { \
+				pr_debug(KERN_NOTICE pr_fmt("[OPLUS_CHG][%s]"fmt), __func__, ##__VA_ARGS__); \
+			} \
+		} while (0)
 
 void oplus_chg_turn_off_charging(struct oplus_chg_chip *chip);
 void oplus_chg_turn_on_charging(struct oplus_chg_chip *chip);
