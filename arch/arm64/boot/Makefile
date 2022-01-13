@@ -24,15 +24,7 @@ DTB_LIST := $(addsuffix .dtb,$(DTB_NAMES))
 else
 DTB_LIST := $(dtb-y)
 endif
-
-DTBO_NAMES := $(subst $\",,$(CONFIG_BUILD_ARM64_DTB_OVERLAY_IMAGE_NAMES))
-ifneq ($(DTBO_NAMES),)
-DTB_LIST += $(addsuffix .dtbo,$(DTBO_NAMES))
-endif
-
 DTB_OBJS := $(addprefix $(obj)/dts/,$(DTB_LIST))
-
-targets += $(DTB_LIST)
 
 $(obj)/Image: vmlinux FORCE
 	$(call if_changed,objcopy)
@@ -56,6 +48,9 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
 	$(call if_changed,lzo)
 
 $(obj)/Image.gz-dtb: $(obj)/Image.gz $(DTB_OBJS) FORCE
+	$(call if_changed,cat)
+
+$(obj)/mtk.dtb: $(DTB_OBJS) FORCE
 	$(call if_changed,cat)
 
 install:
