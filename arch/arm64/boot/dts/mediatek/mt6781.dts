@@ -28,7 +28,7 @@
 
 	/* chosen */
 	chosen: chosen {
-		bootargs = "console=tty0 console=ttyS0,921600n1 root=/dev/ram \
+		bootargs = "root=/dev/ram \
 			vmalloc=400M swiotlb=noforce \
 			initcall_debug=1 \
 			firmware_class.path=/vendor/firmware \
