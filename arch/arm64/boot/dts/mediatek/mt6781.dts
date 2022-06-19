@@ -32,7 +32,7 @@
 			vmalloc=400M slub_debug=OFZPU swiotlb=noforce \
 			initcall_debug=1 \
 			firmware_class.path=/vendor/firmware \
-			page_owner=on nodebugmon loop.max_part=7";
+			page_owner=on quiet nodebugmon loop.max_part=7";
 			kaslr-seed = <0 0>;
 	};
 	//#ifdef OPLUS_FEATURE_THERMAL_HORAE
