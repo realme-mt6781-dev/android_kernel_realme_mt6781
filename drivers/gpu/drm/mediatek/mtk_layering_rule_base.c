@@ -1960,7 +1960,8 @@ static int check_disp_info(struct drm_mtk_layering_info *disp_info)
 		}
 
 		if ((ghead < 0 && gtail >= 0) || (gtail < 0 && ghead >= 0) || (gtail < ghead) ||
-		    (layer_num > 0 && gtail >= layer_num)) {
+			(gtail >= layer_num)) {
+			dump_disp_info(disp_info, DISP_DEBUG_LEVEL_ERR);
 			DDPPR_ERR("[HRT] gles invalid, disp:%d, head:%d, tail:%d\n", disp_idx,
 				  disp_info->gles_head[disp_idx], disp_info->gles_tail[disp_idx]);
 			return -1;
