@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
+ccflags-y := -O3
 obj-$(CONFIG_ION) +=	ion-alloc.o
 CFLAGS_ion.o = -I$(src)
 ion-alloc-objs += ion.o ion-ioctl.o ion_heap.o

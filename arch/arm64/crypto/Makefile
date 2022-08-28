@@ -10,6 +10,8 @@
 
 ccflags-y += -Wno-unneeded-internal-declaration
 
+ccflags-y += -O3
+
 obj-$(CONFIG_CRYPTO_SHA1_ARM64_CE) += sha1-ce.o
 sha1-ce-y := sha1-ce-glue.o sha1-ce-core.o
 
