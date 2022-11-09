@@ -656,8 +656,9 @@ static int kbase_csf_queue_group_suspend_prepare(
 		    (kbase_reg_current_backed_size(reg) < nr_pages) ||
 		    !(reg->flags & KBASE_REG_CPU_WR) ||
 		    (reg->gpu_alloc->type != KBASE_MEM_TYPE_NATIVE) ||
-		    (kbase_is_region_shrinkable(reg)) ||
-		    (kbase_va_region_is_no_user_free(kctx, reg))) {
+		    (reg->flags & KBASE_REG_DONT_NEED) ||
+		    (reg->flags & KBASE_REG_ACTIVE_JIT_ALLOC) ||
+		    (reg->flags & KBASE_REG_NO_USER_FREE)) {
 			ret = -EINVAL;
 			goto out_clean_pages;
 		}
