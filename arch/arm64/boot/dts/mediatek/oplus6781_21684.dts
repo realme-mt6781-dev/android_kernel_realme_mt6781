@@ -19,5 +19,5 @@
 #include "mediatek/oplus6781/common/oplus6781_common.dtsi"
 #include "mediatek/oplus6781/21684/oplus6781_21684.dtsi"
 
-#include <oplus6781_21684/cust.dtsi>
+#include "mediatek/oplus6781/21684/cust.dtsi"
 /*End of this file, DO NOT ADD ANYTHING HERE*/
