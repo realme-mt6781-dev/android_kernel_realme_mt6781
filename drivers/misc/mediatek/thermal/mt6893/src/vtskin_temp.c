@@ -19,13 +19,9 @@
 #include <linux/seq_file.h>
 #include <linux/uaccess.h>
 #include <mt-plat/aee.h>
-#ifdef CONFIG_PM
-#include <linux/suspend.h>
-#endif
 
 
 
-static DEFINE_MUTEX(vtskin_mutex);
 
 
 static kuid_t uid = KUIDT_INIT(0);
@@ -42,10 +38,6 @@ static unsigned int cl_dev_sysrst_state;
 #define VTSKIN3_INDEX     3
 
 
-struct thermal_zone_device *thz_dev0;
-struct thermal_zone_device *thz_dev1;
-struct thermal_zone_device *thz_dev2;
-struct thermal_zone_device *thz_dev3;
 
 
 #define mtktsvtskin_TEMP_CRIT 100000	/* 100.000 degree Celsius */
@@ -158,7 +150,6 @@ static int polling_trip_temp2 = 20000;
 static int polling_factor1 = 5000;
 static int polling_factor2 = 10000;
 
-static int g_resume_done = 1;
 
 
 
@@ -319,7 +310,14 @@ struct thermal_cooling_device *cdev, unsigned long state)
 	return 0;
 }
 
-
+/*
+ *static struct thermal_cooling_device_ops
+ * mtktsbattery_cooling_dis_charge_ops = {
+ *	.get_max_state = dis_charge_get_max_state,
+ *	.get_cur_state = dis_charge_get_cur_state,
+ *	.set_cur_state = dis_charge_set_cur_state,
+ *};
+ */
 static struct thermal_cooling_device_ops mtktsvtskin_cooling_sysrst_ops = {
 	.get_max_state = tsvtskin_sysrst_get_max_state,
 	.get_cur_state = tsvtskin_sysrst_get_cur_state,
@@ -644,7 +642,7 @@ static int mtktsvtskin1_bind(struct thermal_zone_device *thermal,
 		table_val = 9;
 		mtktsvtskin_dprintk("[%s] %s\n", __func__, cdev->type);
 	} else {
-		pr_notice("mtktsvtskin_bind called return 0\n");
+		pr_notice(dev, "mtktsvtskin_bind called return 0\n");
 		return 0;
 	}
 
@@ -825,10 +823,6 @@ static int mtktsvtskin_get_temp(struct thermal_zone_device *thermal, int *temp)
 	char *sensor_name;
 	int id = mtk_thermal_get_vtksin_idx(thermal->type);
 
-	if (!g_resume_done){
-		*temp = THERMAL_TEMP_INVALID;
-		return 0;
-	}
 	if (skin_param[id].ref_num == 0) {
 		*temp = THERMAL_TEMP_INVALID;
 		return 0;
@@ -1038,19 +1032,22 @@ void mtktsvtskin_max_register_thermal(void)
 
 	int i = VTSKIN_MAX_INDEX, ret;
 	struct vtskin_data *skin_data = &mt6893_vtskin_data;
+	struct thermal_zone_device *tzdev;
+	struct device *dev = mt6893_vtskin_data.dev;
 
 
 
-	thz_dev0= mtk_thermal_zone_device_register(mtk_thermal_get_vtksin_tz_name(i), num_trip,
+
+	tzdev= mtk_thermal_zone_device_register(mtk_thermal_get_vtksin_tz_name(i), num_trip,
 							NULL, &mtktsvtskin_max_dev_ops,
 							0, 0, 0, interval * 1000);
 
-	if (IS_ERR(thz_dev0))
+	if (IS_ERR(tzdev))
 		pr_notice("Thermal zone register vtskin max fail");
 
-	ret = snprintf(skin_data->params[i].tz_name, THERMAL_NAME_LENGTH, thz_dev0->type);
+	ret = snprintf(skin_data->params[i].tz_name, THERMAL_NAME_LENGTH, tzdev->type);
 	if (ret < 0)
-		pr_notice("copy tz_name fail %s\n", thz_dev0->type);
+		pr_notice("copy tz_name fail %s\n", tzdev->type);
 
 
 
@@ -1063,18 +1060,22 @@ void mtktsvtskin1_register_thermal(void)
 
 	int i = VTSKIN1_INDEX, ret;
 	struct vtskin_data *skin_data = &mt6893_vtskin_data;
+	struct thermal_zone_device *tzdev;
+	struct device *dev = mt6893_vtskin_data.dev;
 
 
-	thz_dev1= mtk_thermal_zone_device_register(mtk_thermal_get_vtksin_tz_name(i), num_trip1,
+
+
+	tzdev= mtk_thermal_zone_device_register(mtk_thermal_get_vtksin_tz_name(i), num_trip1,
 							NULL, &mtktsvtskin1_dev_ops,
 							0, 0, 0, interval * 1000);
 
-	if (IS_ERR(thz_dev1))
+	if (IS_ERR(tzdev))
 		pr_notice("Thermal zone register fail");
 
-	ret = snprintf(skin_data->params[i].tz_name, THERMAL_NAME_LENGTH, thz_dev1->type);
+	ret = snprintf(skin_data->params[i].tz_name, THERMAL_NAME_LENGTH, tzdev->type);
 	if (ret < 0)
-		pr_notice("copy tz_name fail %s\n", thz_dev1->type);
+		pr_notice("copy tz_name fail %s\n", tzdev->type);
 
 
 
@@ -1087,18 +1088,22 @@ void mtktsvtskin2_register_thermal(void)
 
 	int i = VTSKIN2_INDEX , ret;
 	struct vtskin_data *skin_data = &mt6893_vtskin_data;
+	struct thermal_zone_device *tzdev;
+	struct device *dev = mt6893_vtskin_data.dev;
 
 
-	thz_dev2= mtk_thermal_zone_device_register(mtk_thermal_get_vtksin_tz_name(i), num_trip2,
+
+
+	tzdev= mtk_thermal_zone_device_register(mtk_thermal_get_vtksin_tz_name(i), num_trip2,
 							NULL, &mtktsvtskin2_dev_ops,
 							0, 0, 0, interval * 1000);
 
-	if (IS_ERR(thz_dev2))
+	if (IS_ERR(tzdev))
 		pr_notice("Thermal zone register fail");
 
-	ret = snprintf(skin_data->params[i].tz_name, THERMAL_NAME_LENGTH, thz_dev2->type);
+	ret = snprintf(skin_data->params[i].tz_name, THERMAL_NAME_LENGTH, tzdev->type);
 	if (ret < 0)
-		pr_notice("copy tz_name fail %s\n", thz_dev2->type);
+		pr_notice("copy tz_name fail %s\n", tzdev->type);
 
 
 
@@ -1111,71 +1116,32 @@ void mtktsvtskin3_register_thermal(void)
 
 	int i = VTSKIN3_INDEX , ret;
 	struct vtskin_data *skin_data = &mt6893_vtskin_data;
+	struct thermal_zone_device *tzdev;
+	struct device *dev = mt6893_vtskin_data.dev;
 
-	thz_dev3= mtk_thermal_zone_device_register(mtk_thermal_get_vtksin_tz_name(i), num_trip3,
+	tzdev= mtk_thermal_zone_device_register(mtk_thermal_get_vtksin_tz_name(i), num_trip3,
 							NULL, &mtktsvtskin3_dev_ops,
 							0, 0, 0, interval * 1000);
 
-	if (IS_ERR(thz_dev3))
+	if (IS_ERR(tzdev))
 		pr_notice("Thermal zone register fail");
 
-	ret = snprintf(skin_data->params[i].tz_name, THERMAL_NAME_LENGTH, thz_dev3->type);
+	ret = snprintf(skin_data->params[i].tz_name, THERMAL_NAME_LENGTH, tzdev->type);
 	if (ret < 0)
-		pr_notice("copy tz_name fail %s\n", thz_dev3->type);
+		pr_notice("copy tz_name fail %s\n", tzdev->type);
 
 
 
 }
 
 
-
-
-static void mtktsvtskin_max_unregister_thermal(void)
-{
-	mtktsvtskin_dprintk("[%s]\n", __func__);
-
-	if (thz_dev0) {
-		mtk_thermal_zone_device_unregister(thz_dev0);
-		thz_dev0 = NULL;
-	}
-}
-
-
-static void mtktsvtskin1_unregister_thermal(void)
-{
-	mtktsvtskin_dprintk("[%s]\n", __func__);
-
-	if (thz_dev1) {
-		mtk_thermal_zone_device_unregister(thz_dev1);
-		thz_dev1 = NULL;
-	}
-}
-
-
-static void mtktsvtskin2_unregister_thermal(void)
-{
-	mtktsvtskin_dprintk("[%s]\n", __func__);
-
-	if (thz_dev2) {
-		mtk_thermal_zone_device_unregister(thz_dev2);
-		thz_dev2 = NULL;
-	}
-}
-
-
-static void mtktsvtskin3_unregister_thermal(void)
-{
-	mtktsvtskin_dprintk("[%s]\n", __func__);
-
-	if (thz_dev3) {
-		mtk_thermal_zone_device_unregister(thz_dev3);
-		thz_dev3 = NULL;
-	}
-}
 
 
 static ssize_t mtktsvtskin3_write(
 struct file *file, const char __user *buffer, size_t count, loff_t *data)
+/* static ssize_t mtktsbattery_write(
+ * struct file *file, const char *buffer, int count, void *data)
+ */
 {
 	int len = 0, i;
 	struct mtktsvtskin_data {
@@ -1245,16 +1211,16 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 
 		down(&sem_mutex);
 		mtktsvtskin_dprintk(
-				"[%s] mtktsvtskin_unregister_thermal\n",
+				"[%s] mtktsbattery_unregister_thermal\n",
 				__func__);
 
-		mtktsvtskin3_unregister_thermal();
+		//mtktsbattery_unregister_thermal();
 		pr_notice("num_trip3 mtktsvtskin_write [%d]\n",num_trip3);
 
 		if (num_trip3 < 0 || num_trip3 > 10) {
 			#ifdef CONFIG_MTK_AEE_FEATURE
 			aee_kernel_warning_api(__FILE__, __LINE__,
-					DB_OPT_DEFAULT, "mtktsvtskin3_write",
+					DB_OPT_DEFAULT, "mtktsbattery_write",
 					"Bad argument");
 			#endif
 			mtktsvtskin_dprintk(
@@ -1333,26 +1299,30 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 			trip_temp3[8], trip_temp3[9], interval * 1000);
 
 		mtktsvtskin_dprintk(
-			"[%s] mtktsvtskin_register_thermal\n", __func__);
+			"[%s] mtktsbattery_register_thermal\n", __func__);
 
 		mtktsvtskin3_register_thermal();
 
 		up(&sem_mutex);
 
 		kfree(ptr_mtktsvtskin_data);
+		/* battery_write_flag=1; */
 		return count;
 	}
 
 	mtktsvtskin_dprintk("[%s] bad argument\n", __func__);
     #ifdef CONFIG_MTK_AEE_FEATURE
 	aee_kernel_warning_api(__FILE__, __LINE__, DB_OPT_DEFAULT,
-					"mtktsvtskin3_write", "Bad argument");
+					"mtktsbattery_write", "Bad argument");
     #endif
 	kfree(ptr_mtktsvtskin_data);
 	return -EINVAL;
 }
 
 static int mtktsvtskin3_read(struct seq_file *m, void *v)
+/* static int mtktsbattery_read(
+ * char *buf, char **start, off_t off, int count, int *eof, void *data)
+ */
 {
 
 	seq_printf(m,
@@ -1394,6 +1364,9 @@ static int mtktsvtskin3_read(struct seq_file *m, void *v)
 
 static ssize_t mtktsvtskin2_write(
 struct file *file, const char __user *buffer, size_t count, loff_t *data)
+/* static ssize_t mtktsbattery_write(
+ * struct file *file, const char *buffer, int count, void *data)
+ */
 {
 	int len = 0, i;
 	struct mtktsvtskin_data {
@@ -1463,16 +1436,16 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 
 		down(&sem_mutex);
 		mtktsvtskin_dprintk(
-				"[%s] mtktsvtskin_unregister_thermal\n",
+				"[%s] mtktsbattery_unregister_thermal\n",
 				__func__);
 
-		mtktsvtskin2_unregister_thermal();
+		//mtktsbattery_unregister_thermal();
 		pr_notice("num_trip2 mtktsvtskin_write [%d]\n",num_trip2);
 
 		if (num_trip2 < 0 || num_trip2 > 10) {
 			#ifdef CONFIG_MTK_AEE_FEATURE
 			aee_kernel_warning_api(__FILE__, __LINE__,
-					DB_OPT_DEFAULT, "mtktsvtskin2_write",
+					DB_OPT_DEFAULT, "mtktsbattery_write",
 					"Bad argument");
 			#endif
 			mtktsvtskin_dprintk(
@@ -1551,26 +1524,30 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 			trip_temp2[8], trip_temp2[9], interval * 1000);
 
 		mtktsvtskin_dprintk(
-			"[%s] mtktsvtskin_register_thermal\n", __func__);
+			"[%s] mtktsbattery_register_thermal\n", __func__);
 
 		mtktsvtskin2_register_thermal();
 
 		up(&sem_mutex);
 
 		kfree(ptr_mtktsvtskin_data);
+		/* battery_write_flag=1; */
 		return count;
 	}
 
 	mtktsvtskin_dprintk("[%s] bad argument\n", __func__);
     #ifdef CONFIG_MTK_AEE_FEATURE
 	aee_kernel_warning_api(__FILE__, __LINE__, DB_OPT_DEFAULT,
-					"mtktsvtskin2_write", "Bad argument");
+					"mtktsbattery_write", "Bad argument");
     #endif
 	kfree(ptr_mtktsvtskin_data);
 	return -EINVAL;
 }
 
 static int mtktsvtskin2_read(struct seq_file *m, void *v)
+/* static int mtktsbattery_read(
+ * char *buf, char **start, off_t off, int count, int *eof, void *data)
+ */
 {
 
 	seq_printf(m,
@@ -1611,6 +1588,9 @@ static int mtktsvtskin2_read(struct seq_file *m, void *v)
 
 static ssize_t mtktsvtskin1_write(
 struct file *file, const char __user *buffer, size_t count, loff_t *data)
+/* static ssize_t mtktsbattery_write(
+ * struct file *file, const char *buffer, int count, void *data)
+ */
 {
 	int len = 0, i;
 	struct mtktsvtskin_data {
@@ -1683,15 +1663,15 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 
 		down(&sem_mutex);
 		mtktsvtskin_dprintk(
-				"[%s] mtktsvtskin_unregister_thermal\n",__func__);
+				"[%s] mtktsbattery_unregister_thermal\n",__func__);
 
-		mtktsvtskin1_unregister_thermal();
+		//mtktsbattery_unregister_thermal();
 		pr_notice("num_trip1 mtktsvtskin_write [%d]\n",num_trip1);
 
 		if (num_trip1 < 0 || num_trip1 > 10) {
 			#ifdef CONFIG_MTK_AEE_FEATURE
 			aee_kernel_warning_api(__FILE__, __LINE__,
-					DB_OPT_DEFAULT, "mtktsvtskin1_write",
+					DB_OPT_DEFAULT, "mtktsbattery_write",
 					"Bad argument");
 			#endif
 			mtktsvtskin_dprintk(
@@ -1770,26 +1750,31 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 			trip_temp1[8], trip_temp1[9], interval * 1000);
 
 		mtktsvtskin_dprintk(
-			"[%s] mtktsvtskin_register_thermal\n", __func__);
+			"[%s] mtktsbattery_register_thermal\n", __func__);
 
+		//mtktsbattery_register_thermal();
 
 		mtktsvtskin1_register_thermal();
 		up(&sem_mutex);
 
 		kfree(ptr_mtktsvtskin_data);
+		/* battery_write_flag=1; */
 		return count;
 	}
 
 	mtktsvtskin_dprintk("[%s] bad argument\n", __func__);
     #ifdef CONFIG_MTK_AEE_FEATURE
 	aee_kernel_warning_api(__FILE__, __LINE__, DB_OPT_DEFAULT,
-					"mtktsvtskin1_write", "Bad argument");
+					"mtktsbattery_write", "Bad argument");
     #endif
 	kfree(ptr_mtktsvtskin_data);
 	return -EINVAL;
 }
 
 static int mtktsvtskin1_read(struct seq_file *m, void *v)
+/* static int mtktsbattery_read(
+ * char *buf, char **start, off_t off, int count, int *eof, void *data)
+ */
 {
 
 	seq_printf(m,
@@ -1830,6 +1815,9 @@ static int mtktsvtskin1_read(struct seq_file *m, void *v)
 
 static ssize_t mtktsvtskin0_write(
 struct file *file, const char __user *buffer, size_t count, loff_t *data)
+/* static ssize_t mtktsbattery_write(
+ * struct file *file, const char *buffer, int count, void *data)
+ */
 {
 	int len = 0, i;
 	struct mtktsvtskin_data {
@@ -1898,15 +1886,15 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 
 		down(&sem_mutex);
 		mtktsvtskin_dprintk(
-				"[%s] mtktsvtskin0_unregister_thermal\n",__func__);
+				"[%s] mtktsbattery_unregister_thermal\n",__func__);
 
-		mtktsvtskin_max_unregister_thermal();
+		//mtktsbattery_unregister_thermal();
 		pr_notice("num_trip mtktsvtskin_write[%d]\n", num_trip);
 
 		if (num_trip < 0 || num_trip > 10) {
 			#ifdef CONFIG_MTK_AEE_FEATURE
 			aee_kernel_warning_api(__FILE__, __LINE__,
-					DB_OPT_DEFAULT, "mtktsvtskin0_write",
+					DB_OPT_DEFAULT, "mtktsbattery_write",
 					"Bad argument");
 			#endif
 			mtktsvtskin_dprintk(
@@ -1985,25 +1973,29 @@ struct file *file, const char __user *buffer, size_t count, loff_t *data)
 			trip_temp[8], trip_temp[9], interval * 1000);
 
 		mtktsvtskin_dprintk(
-			"[%s] mtktsvtskin_register_thermal\n", __func__);
+			"[%s] mtktsbattery_register_thermal\n", __func__);
 
 		mtktsvtskin_max_register_thermal();
 		up(&sem_mutex);
 
 		kfree(ptr_mtktsvtskin_data);
+		/* battery_write_flag=1; */
 		return count;
 	}
 
 	mtktsvtskin_dprintk("[%s] bad argument\n", __func__);
     #ifdef CONFIG_MTK_AEE_FEATURE
 	aee_kernel_warning_api(__FILE__, __LINE__, DB_OPT_DEFAULT,
-					"mtktsvtskin0_write", "Bad argument");
+					"mtktsbattery_write", "Bad argument");
     #endif
 	kfree(ptr_mtktsvtskin_data);
 	return -EINVAL;
 }
 
 static int mtktsvtskin0_read(struct seq_file *m, void *v)
+/* static int mtktsbattery_read(
+ * char *buf, char **start, off_t off, int count, int *eof, void *data)
+ */
 {
 
 	seq_printf(m,
@@ -2108,34 +2100,6 @@ static const struct file_operations mtkts_vtskin3_fops = {
 };
 
 
-
-#ifdef CONFIG_PM
-static int vtskin_pm_event(
-		struct notifier_block *notifier,
-		unsigned long pm_event, void *unused)
-{
-	switch (pm_event) {
-	case PM_SUSPEND_PREPARE:
-		mutex_lock(&vtskin_mutex);
-		g_resume_done = 0;
-		mutex_unlock(&vtskin_mutex);
-		break;
-	case PM_POST_SUSPEND:
-		mutex_lock(&vtskin_mutex);
-		g_resume_done = 1;
-		mutex_unlock(&vtskin_mutex);
-		break;
-	}
-	return NOTIFY_OK;
-}
-
-static struct notifier_block vtskin_pm_notifier_func = {
-	.notifier_call = vtskin_pm_event,
-	.priority = 0,
-};
-#endif
-
-
 static int vtskin_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -2145,10 +2109,6 @@ static int vtskin_probe(struct platform_device *pdev)
 	struct proc_dir_entry *mtktsvtskin_dir = NULL;
 	struct proc_dir_entry *entry = NULL;
 	int i; //ret;
-#ifdef CONFIG_PM
-		int ret = -1;
-#endif
-
 
 	if (!pdev->dev.of_node) {
 		pr_notice("Only DT based supported\n");
@@ -2176,6 +2136,7 @@ static int vtskin_probe(struct platform_device *pdev)
 		0664, mtktsvtskin_dir, &mtkts_vtskin_max_fops);
 	if (entry)
 		proc_set_user(entry, uid, gid);
+	}
 
 	entry = proc_create(mtk_thermal_get_vtksin_tz_proc_name(VTSKIN1_INDEX),
 			0664, mtktsvtskin_dir, &mtkts_vtskin1_fops);
@@ -2192,11 +2153,6 @@ static int vtskin_probe(struct platform_device *pdev)
 	if (entry)
 		proc_set_user(entry, uid, gid);
 
-#ifdef CONFIG_PM
-		ret = register_pm_notifier(&vtskin_pm_notifier_func);
-		if (ret)
-			pr_notice("Failed to register dctm PM notifier.\n");
-#endif
 
 
 
