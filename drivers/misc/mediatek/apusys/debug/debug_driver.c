@@ -16,12 +16,6 @@ static int debug_probe(struct platform_device *pdev)
 
 	pr_notice("%s in", __func__);
 
-	ret = apusys_dump_init(&pdev->dev);
-	if (ret) {
-		DBG_LOG_ERR("failed to create debug dump attr node(devinfo).\n");
-		goto out;
-	}
-
 	return 0;
 
 out:
@@ -30,15 +24,8 @@ out:
 	return ret;
 }
 
-static int debug_remove(struct platform_device *pdev)
-{
-	apusys_dump_exit(&pdev->dev);
-	return 0;
-}
-
 static struct platform_driver debug_driver = {
 	.probe = debug_probe,
-	.remove = debug_remove,
 	.driver = {
 		   .name = APUDBG_DEV_NAME,
 		   .owner = THIS_MODULE,
