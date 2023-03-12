@@ -348,13 +348,16 @@ void statsParseUDPInfo(struct sk_buff *skb, uint8_t *pucEthBody,
 {
 	/* the number of DHCP packets is seldom so we print log here */
 	uint8_t *pucUdp = &pucEthBody[20];
-	uint8_t *pucBootp = &pucUdp[UDP_HDR_LEN];
 	struct BOOTP_PROTOCOL *prBootp = NULL;
 	uint16_t u2UdpDstPort;
 	uint16_t u2UdpSrcPort;
 	uint32_t u4TransID;
 	uint32_t u4DhcpMagicCode;
 	char buf[50] = {0};
+
+#if !DBG_DISABLE_ALL_LOG
+    uint8_t *pucBootp = &pucUdp[UDP_HDR_LEN];
+#endif
 
 	prBootp = (struct BOOTP_PROTOCOL *) &pucUdp[UDP_HDR_LEN];
 	u2UdpDstPort = (pucUdp[2] << 8) | pucUdp[3];
@@ -437,9 +440,11 @@ void statsParseUDPInfo(struct sk_buff *skb, uint8_t *pucEthBody,
 		}
 	} else if (u2UdpSrcPort == UDP_PORT_DNS ||
 			u2UdpDstPort == UDP_PORT_DNS) {
+#if !DBG_DISABLE_ALL_LOG
 		uint16_t u2TransId =
 			(pucBootp[0] << 8) | pucBootp[1];
-		if (eventType == EVENT_RX) {
+#endif
+        if (eventType == EVENT_RX) {
 			GLUE_SET_INDEPENDENT_PKT(skb, TRUE);
 			DBGLOG_LIMITED(RX, INFO,
 				"<RX> DNS: IPID 0x%02x, TransID 0x%04x\n",
@@ -737,12 +742,15 @@ static void statsParsePktInfo(uint8_t *pucPkt, struct sk_buff *skb,
 #if CFG_SUPPORT_WAPI
 	case ETH_WPI_1X:
 	{
+#if !DBG_DISABLE_ALL_LOG
 		uint8_t ucSubType = pucEthBody[3]; /* sub type filed*/
-		uint16_t u2Length = *(uint16_t *)&pucEthBody[6];
+        uint16_t u2Length = *(uint16_t *)&pucEthBody[6];
 		uint16_t u2Seq = *(uint16_t *)&pucEthBody[8];
+#endif
 
 		statsLogData(eventType, WLAN_WAKE_1X);
-		switch (eventType) {
+#if !DBG_DISABLE_ALL_LOG
+        switch (eventType) {
 		case EVENT_RX:
 			DBGLOG(RX, INFO,
 				"<RX> WAPI: subType %d, Len %d, Seq %d\n",
@@ -755,6 +763,7 @@ static void statsParsePktInfo(uint8_t *pucPkt, struct sk_buff *skb,
 			       GLUE_GET_PKT_SEQ_NO(skb));
 			break;
 		}
+#endif
 		break;
 	}
 #endif
