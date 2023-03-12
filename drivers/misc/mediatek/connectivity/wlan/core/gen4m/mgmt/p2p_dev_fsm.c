@@ -53,7 +53,7 @@
 #include "p2p_dev_state.h"
 #if CFG_ENABLE_WIFI_DIRECT
 
-#if 1
+#if !DBG_DISABLE_ALL_LOG
 /*lint -save -e64 Type mismatch */
 static uint8_t *apucDebugP2pDevState[P2P_DEV_STATE_NUM] = {
 	(uint8_t *) DISP_STRING("P2P_DEV_STATE_IDLE"),

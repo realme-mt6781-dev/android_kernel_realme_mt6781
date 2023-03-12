@@ -141,11 +141,14 @@ mtk_cfg80211_change_iface(struct wiphy *wiphy,
 			  u32 *flags, struct vif_params *params)
 {
 	struct GLUE_INFO *prGlueInfo = NULL;
-	uint32_t rStatus = WLAN_STATUS_SUCCESS;
 	struct PARAM_OP_MODE rOpMode;
-	uint32_t u4BufLen;
 	struct GL_WPA_INFO *prWpaInfo;
 	uint8_t ucBssIndex = 0;
+
+#if !DBG_DISABLE_ALL_LOG
+    uint32_t u4BufLen;
+    uint32_t rStatus = WLAN_STATUS_SUCCESS;
+#endif
 
 	WIPHY_PRIV(wiphy, prGlueInfo);
 	ASSERT(prGlueInfo);
@@ -161,6 +164,8 @@ mtk_cfg80211_change_iface(struct wiphy *wiphy,
 	else
 		return -EINVAL;
 	rOpMode.ucBssIdx = ucBssIndex;
+
+#if !DBG_DISABLE_ALL_LOG
 	rStatus = kalIoctl(prGlueInfo, wlanoidSetInfrastructureMode,
 		(void *)&rOpMode, sizeof(struct PARAM_OP_MODE),
 		FALSE, FALSE, TRUE, &u4BufLen);
@@ -168,6 +173,7 @@ mtk_cfg80211_change_iface(struct wiphy *wiphy,
 	if (rStatus != WLAN_STATUS_SUCCESS)
 		DBGLOG(REQ, WARN, "set infrastructure mode error:%x\n",
 		       rStatus);
+#endif
 
 	prWpaInfo = aisGetWpaInfo(prGlueInfo->prAdapter,
 		ucBssIndex);
@@ -4010,7 +4016,9 @@ int mtk_cfg80211_testmode_get_scan_done(IN struct wiphy
 #define NL80211_TESTMODE_P2P_SCANDONE_INVALID 0
 #define NL80211_TESTMODE_P2P_SCANDONE_STATUS 1
 
+#if !DBG_DISABLE_ALL_LOG
 	uint32_t rStatus = WLAN_STATUS_SUCCESS;
+#endif
 	int32_t READY_TO_BEAM = 0;
 
 	struct sk_buff *skb = NULL;

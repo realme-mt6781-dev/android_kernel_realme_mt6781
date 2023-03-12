@@ -8980,13 +8980,15 @@ wlanoidSet802dot11PowerSaveProfile(IN struct ADAPTER *
 	struct PARAM_POWER_MODE_ *prPowerMode;
 	struct BSS_INFO *prBssInfo;
 
+#if !DBG_DISABLE_ALL_LOG
 	const uint8_t *apucPsMode[Param_PowerModeMax] = {
 		(uint8_t *) "CAM",
 		(uint8_t *) "MAX PS",
 		(uint8_t *) "FAST PS"
 	};
+#endif
 
-	DEBUGFUNC("wlanoidSet802dot11PowerSaveProfile");
+    DEBUGFUNC("wlanoidSet802dot11PowerSaveProfile");
 
 	ASSERT(prAdapter);
 	ASSERT(pu4SetInfoLen);

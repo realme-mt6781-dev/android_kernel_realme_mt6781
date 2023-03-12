@@ -1861,7 +1861,9 @@ void rsnGenerateRSNIE(IN struct ADAPTER *prAdapter,
 			}
 			/* Fill PMKID Count and List field */
 			if (entry) {
+#if !DBG_DISABLE_ALL_LOG
 				uint8_t *pmk = entry->rBssidInfo.arPMKID;
+#endif
 
 				RSN_IE(pucBuffer)->ucLength = 38;
 				/* Fill PMKID Count field */
@@ -3668,7 +3670,6 @@ u_int8_t rsnParseOsenIE(struct ADAPTER *prAdapter,
 {
 	uint32_t i;
 	int32_t u4RemainRsnIeLen;
-	uint16_t u2Version = 0;
 	uint16_t u2Cap = 0;
 	uint32_t u4GroupSuite = RSN_CIPHER_SUITE_CCMP;
 	uint16_t u2PairSuiteCount = 0;
@@ -3676,6 +3677,10 @@ u_int8_t rsnParseOsenIE(struct ADAPTER *prAdapter,
 	uint8_t *pucPairSuite = NULL;
 	uint8_t *pucAuthSuite = NULL;
 	uint8_t *cp;
+
+#if !DBG_DISABLE_ALL_LOG
+    uint16_t u2Version = 0;
+#endif
 
 	cp = ((uint8_t *) prInfoElem) + 6;
 	u4RemainRsnIeLen = (int32_t) prInfoElem->ucLength - 4;
