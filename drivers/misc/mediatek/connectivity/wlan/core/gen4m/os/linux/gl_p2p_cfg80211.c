@@ -3704,7 +3704,8 @@ int mtk_p2p_cfg80211_testmode_cmd(struct wiphy *wiphy,
 			break;
 #if CFG_SUPPORT_NFC_BEAM_PLUS
 		case 0x11:	/*NFC Beam + Indication */
-			if (data && len) {
+#if !DBG_DISABLE_ALL_LOG
+            if (data && len) {
 				struct NL80211_DRIVER_SET_NFC_PARAMS *prParams =
 					(struct NL80211_DRIVER_SET_NFC_PARAMS *)
 					data;
@@ -3713,6 +3714,7 @@ int mtk_p2p_cfg80211_testmode_cmd(struct wiphy *wiphy,
 					"NFC: BEAM[%d]\n",
 					prParams->NFC_Enable);
 			}
+#endif
 			break;
 		case 0x12:	/*NFC Beam + Indication */
 			DBGLOG(P2P, INFO, "NFC: Polling\n");

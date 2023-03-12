@@ -107,6 +107,7 @@
  *                           P R I V A T E   D A T A
  *******************************************************************************
  */
+#if !DBG_DISABLE_ALL_LOG
 static const uint8_t *apucDebugNetdevState[] = {
 	(uint8_t *) DISP_STRING("NETDEV_UNKNOWN"),
 	(uint8_t *) DISP_STRING("NETDEV_UP"),
@@ -140,7 +141,7 @@ static const uint8_t *apucDebugNetdevState[] = {
 	(uint8_t *) DISP_STRING("NETDEV_UNKNOWN"),
 	(uint8_t *) DISP_STRING("NETDEV_CHANGE_TX_QUEUE_LEN"),
 };
-
+#endif
 /*******************************************************************************
  *                                 M A C R O S
  *******************************************************************************

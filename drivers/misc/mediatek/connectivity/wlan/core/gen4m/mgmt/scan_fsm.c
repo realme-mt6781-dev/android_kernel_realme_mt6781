@@ -91,10 +91,12 @@
  *                           P R I V A T E   D A T A
  *******************************************************************************
  */
+#if !DBG_DISABLE_ALL_LOG
 static uint8_t *apucDebugScanState[SCAN_STATE_NUM] = {
 	(uint8_t *) DISP_STRING("IDLE"),
 	(uint8_t *) DISP_STRING("SCANNING"),
 };
+#endif
 
 /*******************************************************************************
  *                                 M A C R O S
@@ -908,7 +910,9 @@ void scnEventScanDone(IN struct ADAPTER *prAdapter,
 	/* Full2Partial */
 	if (prScanInfo->fgIsScanForFull2Partial &&
 		prScanInfo->ucFull2PartialSeq == prScanDone->ucSeqNum) {
-		uint32_t *pu4BitMap = &(prScanInfo->au4ChannelBitMap[0]);
+#if !DBG_DISABLE_ALL_LOG
+        uint32_t *pu4BitMap = &(prScanInfo->au4ChannelBitMap[0]);
+#endif
 #if (CFG_SUPPORT_WIFI_6G == 1)
 		log_dbg(SCN, INFO,
 			"Full2Partial(%u):%08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X %08X\n",

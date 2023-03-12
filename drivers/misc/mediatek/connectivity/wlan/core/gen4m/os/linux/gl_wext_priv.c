@@ -11442,8 +11442,10 @@ static int priv_driver_get_wow_port(IN struct net_device *prNetDev,
 	uint8_t	ucVer = 0, ucProto = 0;
 	uint16_t ucCount;
 	uint16_t *pausPortArry;
+#if !DBG_DISABLE_ALL_LOG
 	int8_t *aucIp[2] = {"IPv4", "IPv6"};
 	int8_t *aucProto[2] = {"UDP", "TCP"};
+#endif
 
 	prGlueInfo = *((struct GLUE_INFO **) netdev_priv(prNetDev));
 	pWOW_CTRL = &prGlueInfo->prAdapter->rWowCtrl;

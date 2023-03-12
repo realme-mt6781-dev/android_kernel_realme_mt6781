@@ -371,8 +371,9 @@ void halShowPseInfo(IN struct ADAPTER *prAdapter)
 
 #undef BUF_SIZE
 }
-
+#if !DBG_DISABLE_ALL_LOG
 static int8_t *sta_ctrl_reg[] = {"ENABLE", "*DISABLE", "*PAUSE"};
+#endif
 static struct EMPTY_QUEUE_INFO Queue_Empty_info[] = {
 	{"CPU Q0",  ENUM_UMAC_CPU_PORT_1,     ENUM_UMAC_CTX_Q_0},
 	{"CPU Q1",  ENUM_UMAC_CPU_PORT_1,     ENUM_UMAC_CTX_Q_1},
@@ -620,6 +621,7 @@ void halShowPleInfo(IN struct ADAPTER *prAdapter,
 		}
 	}
 
+#if !DBG_DISABLE_ALL_LOG
 	for (j = 0; j < 16; j = j + 4) { /* show AC Q info */
 		for (i = 0; i < 32; i++) {
 			if (((ple_stat[j + 1] & (0x1 << i)) >> i) == 0) {
@@ -639,7 +641,7 @@ void halShowPleInfo(IN struct ADAPTER *prAdapter,
 			}
 		}
 	}
-
+#endif
 	buf = (char *) kalMemAlloc(BUF_SIZE, VIR_MEM_TYPE);
 	if (buf) {
 		kalMemZero(buf, BUF_SIZE);
@@ -1189,6 +1191,7 @@ void haldumpMacInfo(struct ADAPTER *prAdapter)
 #undef BUF_SIZE
 }
 
+#if !DBG_DISABLE_ALL_LOG
 static char *q_idx_mcu_str[] = {"RQ0", "RQ1", "RQ2", "RQ3", "Invalid"};
 static char *pkt_ft_str[] = {"cut_through", "store_forward",
 	"cmd", "PDA_FW_Download"};
@@ -1207,9 +1210,11 @@ static char *q_idx_lmac_str[] = {"WMM0_AC0", "WMM0_AC1", "WMM0_AC2", "WMM0_AC3",
 	"Band1_ALTX", "Band1_BMC", "Band1_BNC", "Band1_PSMP",
 	"Invalid"};
 
+#endif
 void halDumpTxdInfo(IN struct ADAPTER *prAdapter, uint8_t *tmac_info)
 {
-	struct TMAC_TXD_S *txd_s;
+#if !DBG_DISABLE_ALL_LOG
+    struct TMAC_TXD_S *txd_s;
 	struct TMAC_TXD_0 *txd_0;
 	struct TMAC_TXD_1 *txd_1;
 	uint8_t q_idx = 0;
@@ -1360,6 +1365,7 @@ void halDumpTxdInfo(IN struct ADAPTER *prAdapter, uint8_t *tmac_info)
 			DBGLOG(HAL, INFO, "\t\tbw=%d\n", txd_6->bw);
 		}
 	}
+#endif
 }
 
 void halShowTxdInfo(

@@ -420,7 +420,10 @@ u_int8_t glResetTrigger(struct ADAPTER *prAdapter,
 /*----------------------------------------------------------------------------*/
 static void mtk_wifi_reset_main(struct RESET_STRUCT *rst)
 {
-	u_int8_t fgResult = FALSE;
+#if !DBG_DISABLE_ALL_LOG
+    u_int8_t fgResult = FALSE;
+#endif
+
 	int32_t ret;
 #if CFG_WMT_RESET_API_SUPPORT
 	/* wlanOnAtReset(); */
@@ -434,11 +437,15 @@ static void mtk_wifi_reset_main(struct RESET_STRUCT *rst)
 	}
 #endif
 #else
+#if !DBG_DISABLE_ALL_LOG
 	fgResult = rst_L0_notify_step1();
+#endif
 
 	wait_core_dump_end();
 
+#if !DBG_DISABLE_ALL_LOG
 	fgResult = rst->prGlueInfo->prAdapter->chip_info->rst_L0_notify_step2();
+#endif
 
 #if CFG_CHIP_RESET_HANG
 	if (fgIsResetHangState == SER_L0_HANG_RST_NONE)
@@ -471,7 +478,9 @@ static void mtk_wifi_reset_main(struct RESET_STRUCT *rst)
 					(uint32_t) eResetReason) != 0)
 		DBGLOG(INIT, ERROR, "Send WIFI_EVENT_RESET_TRIGGERED Error!\n");
 
+#if !DBG_DISABLE_ALL_LOG
 	DBGLOG(INIT, STATE, "[SER][L0] flow end, fgResult=%d\n", fgResult);
+#endif
 }
 
 #if CFG_WMT_RESET_API_SUPPORT

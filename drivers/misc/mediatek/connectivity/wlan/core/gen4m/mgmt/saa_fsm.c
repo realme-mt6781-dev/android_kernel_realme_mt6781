@@ -90,6 +90,7 @@
  *                           P R I V A T E   D A T A
  *******************************************************************************
  */
+#if !DBG_DISABLE_ALL_LOG
 static uint8_t *apucDebugAAState[AA_STATE_NUM] = {
 	(uint8_t *) DISP_STRING("AA_IDLE"),
 	(uint8_t *) DISP_STRING("SAA_SEND_AUTH1"),
@@ -104,7 +105,7 @@ static uint8_t *apucDebugAAState[AA_STATE_NUM] = {
 	(uint8_t *) DISP_STRING("AAA_SEND_ASSOC2"),
 	(uint8_t *) DISP_STRING("AA_RESOURCE")
 };
-
+#endif
 /*******************************************************************************
  *                                 M A C R O S
  *******************************************************************************
