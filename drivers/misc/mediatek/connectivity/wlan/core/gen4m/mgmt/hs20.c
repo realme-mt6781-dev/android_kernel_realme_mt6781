@@ -341,9 +341,12 @@ u_int8_t hs20IsGratuitousArp(IN struct ADAPTER *prAdapter,
 		prCurrSwRfb->pvHeader + ETHER_HEADER_LEN + ARP_SENDER_IP_OFFSET;
 	uint8_t *pucTargetIP =
 		prCurrSwRfb->pvHeader + ETHER_HEADER_LEN + ARP_TARGET_IP_OFFSET;
+
+#if CFG_HS20_DEBUG
 	uint8_t *pucSenderMac = ((uint8_t *)
 		prCurrSwRfb->pvHeader +
 		ETHER_HEADER_LEN + ARP_SENDER_MAC_OFFSET);
+#endif
 
 #if CFG_HS20_DEBUG && 0
 /* UINT_8  aucIpAllZero[4] = {0,0,0,0}; */
@@ -369,11 +372,13 @@ u_int8_t hs20IsGratuitousArp(IN struct ADAPTER *prAdapter,
 
 	/* IsGratuitousArp */
 	if (!kalMemCmp(pucSenderIP, pucTargetIP, 4)) {
-		kalPrint(
+#if CFG_HS20_DEBUG
+        kalPrint(
 			"Drop Gratuitous ARP from [" MACSTR "] [%d:%d:%d:%d]\n",
 			MAC2STR(pucSenderMac), *pucTargetIP, *(pucTargetIP + 1),
 			*(pucTargetIP + 2), *(pucTargetIP + 3));
-		return TRUE;
+#endif
+        return TRUE;
 	}
 	return FALSE;
 }
