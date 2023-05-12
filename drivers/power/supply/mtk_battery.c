@@ -1138,10 +1138,6 @@ int BattThermistorConverTemp(struct mtk_battery *gm, int Res)
 		TBatt_Value = (((Res - RES2) * TMP1) +
 			((RES1 - Res) * TMP2)) * 10 / (RES1 - RES2);
 	}
-	bm_debug("[%s] %d %d %d %d %d %d\n",
-		__func__,
-		RES1, RES2, Res, TMP1,
-		TMP2, TBatt_Value);
 
 	return TBatt_Value;
 }
@@ -3334,19 +3330,6 @@ void fg_nafg_monitor(struct mtk_battery *gm)
 void fg_drv_update_hw_status(struct mtk_battery *gm)
 {
 	ktime_t ktime;
-
-	bm_err("car[%d,%ld,%ld,%ld,%ld] tmp:%d soc:%d uisoc:%d vbat:%d ibat:%d algo:%d gm3:%d %d %d %d,boot:%d\n",
-		gauge_get_int_property(GAUGE_PROP_COULOMB),
-		gm->coulomb_plus.end, gm->coulomb_minus.end,
-		gm->uisoc_plus.end, gm->uisoc_minus.end,
-		force_get_tbat_internal(gm, true),
-		gm->soc, gm->ui_soc,
-		gauge_get_int_property(GAUGE_PROP_BATTERY_VOLTAGE),
-		gauge_get_int_property(GAUGE_PROP_BATTERY_CURRENT),
-		gm->algo.active,
-		gm->disableGM30, gm->fg_cust_data.disable_nafg,
-		gm->ntc_disable_nafg, gm->cmd_disable_nafg,
-		gm->bootmode);
 
 	fg_drv_update_daemon(gm);
 
