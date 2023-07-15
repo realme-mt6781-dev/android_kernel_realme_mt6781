@@ -569,7 +569,6 @@ int accdet_read_audio_res(unsigned int res_value)
 
 	return RET_GT_5K;
 }
-EXPORT_SYMBOL(accdet_read_audio_res);
 
 static u64 accdet_get_current_time(void)
 {
@@ -1990,7 +1989,6 @@ void accdet_late_init(unsigned long data)
 	} else
 		pr_info("%s inited dts fail\n", __func__);
 }
-EXPORT_SYMBOL(accdet_late_init);
 
 static void delay_init_work_callback(struct work_struct *work)
 {
