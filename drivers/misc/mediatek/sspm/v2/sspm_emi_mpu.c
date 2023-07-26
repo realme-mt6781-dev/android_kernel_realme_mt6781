@@ -13,7 +13,7 @@
 static unsigned long long sspm_start;
 static unsigned long long sspm_end;
 
-void __init sspm_set_emi_mpu(phys_addr_t base, phys_addr_t size)
+void sspm_set_emi_mpu(phys_addr_t base, phys_addr_t size)
 {
 	sspm_start = base;
 	sspm_end = base + size - 1;
