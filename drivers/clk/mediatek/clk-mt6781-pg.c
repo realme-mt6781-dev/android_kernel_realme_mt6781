@@ -2910,7 +2910,7 @@ struct mtk_power_gate {
 	}
 
 /* FIXME: all values needed to be verified */
-struct mtk_power_gate scp_clks[] __initdata = {
+struct mtk_power_gate scp_clks[] = {
 	PGATE(SCP_SYS_MD1, pg_md1, NULL, NULL, SYS_MD1),
 	PGATE(SCP_SYS_CONN, pg_conn, NULL, NULL, SYS_CONN),
 	PGATE(SCP_SYS_DIS, pg_dis, NULL, disp_sel, SYS_DIS),
@@ -2932,7 +2932,7 @@ struct mtk_power_gate scp_clks[] __initdata = {
 	PGATE(SCP_SYS_CSI, pg_csi, NULL, NULL, SYS_CSI),
 };
 
-static void __init init_clk_scpsys(void __iomem *infracfg_reg,
+static void init_clk_scpsys(void __iomem *infracfg_reg,
 				   void __iomem *spm_reg,
 				   void __iomem *infra_reg,
 				   void __iomem *smi_common_reg,
