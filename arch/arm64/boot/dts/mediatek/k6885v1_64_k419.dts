@@ -328,7 +328,7 @@
 	usb_default: usb_default {
 	};
 
-	gpio_redriver_c1_init: c1_init {
+	gpio_redriver_c1_init: redriver_c1_init {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO113__FUNC_GPIO113>;
 			slew-rate = <1>;
@@ -336,7 +336,7 @@
 		};
 	};
 
-	gpio_redriver_c1_low: c1_low {
+	gpio_redriver_c1_low: redriver_c1_low {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO113__FUNC_GPIO113>;
 			slew-rate = <1>;
@@ -344,7 +344,7 @@
 		};
 	};
 
-	gpio_redriver_c1_hiz: c1_highz {
+	gpio_redriver_c1_hiz: redriver_c1_highz {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO113__FUNC_GPIO113>;
 			slew-rate= <0>;
@@ -352,7 +352,7 @@
 		};
 	};
 
-	gpio_redriver_c1_high: c1_high {
+	gpio_redriver_c1_high: redriver_c1_high {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO113__FUNC_GPIO113>;
 			slew-rate = <1>;
@@ -360,7 +360,7 @@
 		};
 	};
 
-	gpio_redriver_c2_init: c2_init {
+	gpio_redriver_c2_init: redriver_c2_init {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO112__FUNC_GPIO112>;
 			slew-rate = <1>;
@@ -368,7 +368,7 @@
 		};
 	};
 
-	gpio_redriver_c2_low: c2_low {
+	gpio_redriver_c2_low: redriver_c2_low {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO112__FUNC_GPIO112>;
 			slew-rate = <1>;
@@ -376,7 +376,7 @@
 		};
 	};
 
-	gpio_redriver_c2_hiz: c2_highz {
+	gpio_redriver_c2_hiz: redriver_c2_highz {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO112__FUNC_GPIO112>;
 			slew-rate= <0>;
@@ -384,7 +384,7 @@
 		};
 	};
 
-	gpio_redriver_c2_high: c2_high {
+	gpio_redriver_c2_high: redriver_c2_high {
 		pins_cmd_dat {
 			pinmux = <PINMUX_GPIO112__FUNC_GPIO112>;
 			slew-rate = <1>;
@@ -551,6 +551,86 @@
 	cam2_enable_sensor = "imx350_mipi_raw imx386_mipi_mono imx319_mipi_raw";
 };
 /* CAMERA specify sensor end */
+
+/* usb typec mux */
+&pio {
+	c1_active: c1_high {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO113__FUNC_GPIO113>;
+			output-high;
+		};
+	};
+
+	c2_active: c2_highz {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO112__FUNC_GPIO112>;
+			input-enable;
+			bias-disable;
+		};
+	};
+
+	c1_sleep: c1_low {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO113__FUNC_GPIO113>;
+			output-low;
+		};
+	};
+
+	c2_sleep: c2_low {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO112__FUNC_GPIO112>;
+			output-low;
+		};
+	};
+
+	sel_up: sel_high {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO111__FUNC_GPIO111>;
+			output-high;
+		};
+	};
+
+	sel_down: sel_low {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO111__FUNC_GPIO111>;
+			output-low;
+		};
+	};
+
+	sw_enable: sw_enable {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO110__FUNC_GPIO110>;
+			output-low;
+		};
+	};
+
+	sw_disable: sw_disable {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO110__FUNC_GPIO110>;
+			output-low;
+		};
+	};
+};
+
+&ptn36241g {
+	pinctrl-names = "c1_active", "c1_sleep",
+		"c2_active", "c2_sleep";
+	pinctrl-0 = <&c1_active>;
+	pinctrl-1 = <&c1_sleep>;
+	pinctrl-2 = <&c2_active>;
+	pinctrl-3 = <&c2_sleep>;
+	status = "okay";
+};
+
+&fusb340 {
+	pinctrl-names = "sel_up", "sel_down",
+		"enable", "disable";
+	pinctrl-0 = <&sel_up>;
+	pinctrl-1 = <&sel_down>;
+	pinctrl-2 = <&sw_enable>;
+	pinctrl-3 = <&sw_disable>;
+	status = "okay";
+};
 
 #include "mediatek/cust_mt6885_touch_1080x2280.dtsi"
 #include "mediatek/cust_mt6885_camera.dtsi"

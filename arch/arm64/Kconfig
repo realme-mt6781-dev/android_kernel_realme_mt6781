@@ -1056,8 +1056,7 @@ config ARM64_TAGGED_ADDR_ABI
 
 config COMPAT_VDSO
 	bool "Enable vDSO for 32-bit applications"
-	depends on !CPU_BIG_ENDIAN
-	depends on (CC_IS_CLANG && LD_IS_LLD) || "$(CROSS_COMPILE_COMPAT)" != ""
+	depends on !CPU_BIG_ENDIAN && "$(CROSS_COMPILE_COMPAT)" != ""
 	select GENERIC_COMPAT_VDSO
 	default y
 	help
@@ -1424,13 +1423,14 @@ config DMI
 	  However, even with this option, the resultant kernel should
 	  continue to boot on existing non-UEFI platforms.
 
+#ifdef OPLUS_BUG_STABILITY
 config BUILD_ARM64_APPENDED_DTB_IMAGE
-        bool "Build a concatenated Image.gz/dtb by default"
-        depends on OF
-        help
-          Enabling this option will cause a concatenated Image.gz and list of
-          DTBs to be built by default (instead of a standalone Image.gz.)
-          The image will built in arch/arm64/boot/Image.gz-dtb
+	bool "Build a concatenated Image.gz/dtb by default"
+	depends on OF
+	help
+	  Enabling this option will cause a concatenated Image.gz and list of
+	  DTBs to be built by default (instead of a standalone Image.gz.)
+	  The image will built in arch/arm64/boot/Image.gz-dtb
 
 config BUILD_ARM64_DTB_OVERLAY_IMAGE
 	bool "Build a device tree overlay image"
@@ -1441,32 +1441,12 @@ config BUILD_ARM64_DTB_OVERLAY_IMAGE
 	  Overlay DT contains device-specific configurations.
 	  Please be aware that bootloader supports DT merging.
 
-choice
-        prompt "Appended DTB Kernel Image name"
-        depends on BUILD_ARM64_APPENDED_DTB_IMAGE
-        help
-          Enabling this option will cause a specific kernel image Image or
-          Image.gz to be used for final image creation.
-          The image will built in arch/arm64/boot/IMAGE-NAME-dtb
-
-        config IMG_GZ_DTB
-                bool "Image.gz-dtb"
-        config IMG_DTB
-                bool "Image-dtb"
-endchoice
-
-config BUILD_ARM64_APPENDED_KERNEL_IMAGE_NAME
-        string
-        depends on BUILD_ARM64_APPENDED_DTB_IMAGE
-        default "Image.gz-dtb" if IMG_GZ_DTB
-        default "Image-dtb" if IMG_DTB
-
 config BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES
-        string "Default dtb names"
-        depends on BUILD_ARM64_APPENDED_DTB_IMAGE
-        help
-          Space separated list of names of dtbs to append when
-          building a concatenated Image.gz-dtb.
+	string "Default dtb names"
+	depends on BUILD_ARM64_APPENDED_DTB_IMAGE
+	help
+	  Space separated list of names of dtbs to append when
+	  building a concatenated Image.gz-dtb.
 
 config BUILD_ARM64_DTB_OVERLAY_IMAGE_NAMES
 	string "Default dtb overlay names"
@@ -1474,7 +1454,7 @@ config BUILD_ARM64_DTB_OVERLAY_IMAGE_NAMES
 	help
 	  Space separated list of names of dtbs to append when
 	  building a concatenated overlay image
-
+#endif
 endmenu
 
 config COMPAT
@@ -1562,3 +1542,5 @@ source "arch/arm64/kvm/Kconfig"
 if CRYPTO
 source "arch/arm64/crypto/Kconfig"
 endif
+
+source "arch/arm64/kernel/rootguard/Kconfig"
