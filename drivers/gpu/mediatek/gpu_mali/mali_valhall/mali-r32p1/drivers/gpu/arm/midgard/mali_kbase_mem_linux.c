@@ -689,6 +689,10 @@ unsigned long kbase_mem_evictable_reclaim_scan_objects(struct shrinker *s,
 
 	kctx = container_of(s, struct kbase_context, reclaim);
 
+	if(mutex_is_locked(&kctx->jit_evict_lock)) {
+		return SHRINK_STOP;
+	}
+
 	mutex_lock(&kctx->jit_evict_lock);
 
 	list_for_each_entry_safe(alloc, tmp, &kctx->evict_list, evict_node) {
@@ -3136,6 +3140,9 @@ void *kbase_vmap_prot(struct kbase_context *kctx, u64 gpu_addr, size_t size,
 	reg = kbase_region_tracker_find_region_enclosing_address(kctx,
 			gpu_addr);
 	if (kbase_is_region_invalid_or_free(reg))
+		goto out_unlock;
+
+	if (reg->gpu_alloc->type != KBASE_MEM_TYPE_NATIVE)
 		goto out_unlock;
 
 	/* check access permissions can be satisfied

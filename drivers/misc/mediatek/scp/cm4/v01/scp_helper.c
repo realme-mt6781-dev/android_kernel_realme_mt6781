@@ -105,6 +105,9 @@ unsigned int mpu_region_id;
 unsigned char *scp_send_buff[SCP_CORE_TOTAL];
 unsigned char *scp_recv_buff[SCP_CORE_TOTAL];
 
+#ifdef OPLUS_FEATURE_SENSOR
+unsigned char *ipi_buff[SCP_CORE_TOTAL];
+#endif
 static struct workqueue_struct *scp_workqueue;
 #if SCP_RECOVERY_SUPPORT
 static struct workqueue_struct *scp_reset_workqueue;
@@ -343,6 +346,7 @@ static void scp_A_notify_ws(struct work_struct *ws)
 		container_of(ws, struct scp_work_struct, work);
 	unsigned int scp_notify_flag = sws->flags;
 
+	pr_err("[oem] scp_A_notify_ws");
 	scp_ready[SCP_A_ID] = scp_notify_flag;
 
 	if (scp_notify_flag) {
@@ -1229,23 +1233,24 @@ void set_scp_mpu(void)
 #else
 void set_scp_mpu(void)
 {
-	struct emimpu_region_t md_region;
+	struct emimpu_region_t md_region = {};
 
-	mtk_emimpu_init_region(&md_region, mpu_region_id);
-	mtk_emimpu_set_addr(&md_region, scp_mem_base_phys,
-		scp_mem_base_phys + scp_mem_size - 1);
-	mtk_emimpu_set_apc(&md_region, MPU_DOMAIN_D0,
-		MTK_EMIMPU_NO_PROTECTION);
-	mtk_emimpu_set_apc(&md_region, MPU_DOMAIN_D3,
-		MTK_EMIMPU_NO_PROTECTION);
-	if (mtk_emimpu_set_protection(&md_region))
-		pr_notice("[SCP]mtk_emimpu_set_protection fail\n");
-	mtk_emimpu_free_region(&md_region);
-	pr_notice("[SCP] MPU protect SCP Share region<%d:%08llx:%08llx>\n",
-			md_region.rg_num,
-			(uint64_t)md_region.start,
-			(uint64_t)md_region.end);
+	int ret = mtk_emimpu_init_region(&md_region, mpu_region_id);
 
+	if (ret == -1) {
+		pr_notice("[SCP] %s: emimpu_region init fail\n", __func__);
+		WARN_ON(1);
+	} else {
+		mtk_emimpu_set_addr(&md_region, scp_mem_base_phys,
+			scp_mem_base_phys + scp_mem_size - 1);
+		mtk_emimpu_set_apc(&md_region, MPU_DOMAIN_D0,
+			MTK_EMIMPU_NO_PROTECTION);
+		mtk_emimpu_set_apc(&md_region, MPU_DOMAIN_D3,
+			MTK_EMIMPU_NO_PROTECTION);
+		if (mtk_emimpu_set_protection(&md_region))
+			pr_notice("[SCP]mtk_emimpu_set_protection fail\n");
+		mtk_emimpu_free_region(&md_region);
+	}
 }
 #endif
 #endif
@@ -2005,6 +2010,12 @@ static int __init scp_init(void)
 	if (!scp_recv_buff[SCP_A_ID])
 		goto err_3;
 
+#ifdef OPLUS_FEATURE_SENSOR
+	ipi_buff[SCP_A_ID] = kmalloc((size_t) SHARE_BUF_SIZE, GFP_KERNEL);
+	if (!ipi_buff[SCP_A_ID])
+		goto err_3;
+#endif
+
 	INIT_WORK(&scp_A_notify_work.work, scp_A_notify_ws);
 	INIT_WORK(&scp_timeout_work.work, scp_timeout_ws);
 
@@ -2037,6 +2048,14 @@ static int __init scp_init(void)
 		pr_err("[SCP] CM4 A require irq failed\n");
 		goto err_3;
 	}
+
+#ifdef CONFIG_MACH_MT6781
+	ret = enable_irq_wake(scpreg.irq);
+	if (ret < 0) {
+		pr_err("[SCP] CM4 A register wakeup irq failed\n");
+		goto err_3;
+	}
+#endif
 
 #if SCP_LOGGER_ENABLE
 	/* scp logger initialise */
@@ -2129,6 +2148,10 @@ static void __exit scp_exit(void)
 	for (i = 0; i < SCP_CORE_TOTAL; i++) {
 		kfree(scp_send_buff[i]);
 		kfree(scp_recv_buff[i]);
+
+#ifdef OPLUS_FEATURE_SENSOR
+		kfree(ipi_buff[i]);
+#endif
 	}
 }
 

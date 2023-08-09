@@ -32,6 +32,7 @@
 #include <linux/sched/signal.h>
 #include <linux/spinlock.h>
 #include <uapi/linux/sched/types.h>
+#include <mtk_cpuidle_status.h>
 #include <mt6873_spm_comm.h>
 
 #include <mtk_lpm.h>
@@ -42,7 +43,6 @@
 #include <mtk_dbg_common_v1.h>
 #include <mt-plat/mtk_ccci_common.h>
 #include <uapi/linux/sched/types.h>
-#include <mtk_cpuidle_status.h>
 #include "mt6873.h"
 #include "mt6873_suspend.h"
 

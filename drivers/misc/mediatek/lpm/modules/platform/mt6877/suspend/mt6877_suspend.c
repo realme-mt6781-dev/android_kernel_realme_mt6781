@@ -27,7 +27,6 @@
 #include <linux/kthread.h>
 #include <linux/hrtimer.h>
 #include <linux/ktime.h>
-
 #include <mt6877_spm_comm.h>
 #include <mtk_lpm.h>
 #include <mtk_lpm_module.h>
@@ -462,6 +461,7 @@ int __init mt6877_model_suspend_init(void)
 		pr_debug("[name:spm&][SPM] Failed to register PM notifier.\n");
 		return ret;
 	}
+
 	for (i = 0; i < CPU_NUMBER; i++) {
 		hrtimer_init(&lpm_hrtimer[i], CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 		lpm_hrtimer[i].function = lpm_hrtimer_timeout;

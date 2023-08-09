@@ -18,6 +18,9 @@
 #include "mtk_drm_trace.h"
 
 #define MAX_ENTER_IDLE_RSZ_RATIO 300
+#ifdef OPLUS_BUG_STABILITY
+#define MAX_ENTER_IDLE_RSZ_RATIO_SPACE 250
+#endif
 
 static void mtk_drm_idlemgr_enable_crtc(struct drm_crtc *crtc);
 static void mtk_drm_idlemgr_disable_crtc(struct drm_crtc *crtc);
@@ -377,6 +380,28 @@ static int mtk_drm_idlemgr_monitor_thread(void *data)
 			 * will flicker into idle repaint, so let it not
 			 * into idle repaint as workaround.
 			 */
+#ifdef OPLUS_BUG_STABILITY
+			if (mtk_crtc->panel_ext && mtk_crtc->panel_ext->params
+					&& mtk_crtc->panel_ext->params->ratio_for_dispidle) {
+				if (mtk_crtc_is_frame_trigger_mode(crtc) == 0 &&
+						((mtk_drm_idlemgr_get_rsz_ratio(mtk_state) >=
+						  MAX_ENTER_IDLE_RSZ_RATIO_SPACE) ||
+						 mtk_planes_is_yuv_fmt(crtc))) {
+					DDP_MUTEX_UNLOCK(&mtk_crtc->lock, __func__,
+							__LINE__);
+					continue;
+				}
+			} else {
+				if (mtk_crtc_is_frame_trigger_mode(crtc) == 0 &&
+						((mtk_drm_idlemgr_get_rsz_ratio(mtk_state) >=
+						  MAX_ENTER_IDLE_RSZ_RATIO) ||
+						 mtk_planes_is_yuv_fmt(crtc))) {
+					DDP_MUTEX_UNLOCK(&mtk_crtc->lock, __func__,
+							__LINE__);
+					continue;
+				}
+			}
+#else
 			if (mtk_crtc_is_frame_trigger_mode(crtc) == 0 &&
 				((mtk_drm_idlemgr_get_rsz_ratio(mtk_state) >=
 				MAX_ENTER_IDLE_RSZ_RATIO) ||
@@ -384,7 +409,8 @@ static int mtk_drm_idlemgr_monitor_thread(void *data)
 				DDP_MUTEX_UNLOCK(&mtk_crtc->lock, __func__,
 						__LINE__);
 				continue;
-			}
+                        }
+#endif /* OPLUS_BUG_STABILITY */
 		}
 
 		if (idlemgr_ctx->is_idle
