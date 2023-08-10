@@ -4565,15 +4565,15 @@ static kal_uint32 open(void)
 *************************************************************************/
 static kal_uint32 close(void)
 {
-	#ifdef CONFIG_MTK_CAM_SECURITY_SUPPORT
+#ifdef CONFIG_MTK_CAM_SECURITY_SUPPORT
 	struct command_params c_params = {0};
 	MUINT32 ret = 0;
 	LOG_INF("%s imgsensor.enable_secure %d\n", __func__, imgsensor.enable_secure);
 
 	if (imgsensor.enable_secure) {
-		if (imgsensor_ca_invoke_command(IMGSENSOR_TEE_CMD_CLOSE, c_params, &ret) != 0) {
-			return ERROR_TEE_CA_TA_FAIL;
-		}
+		// if (imgsensor_ca_invoke_command(IMGSENSOR_TEE_CMD_CLOSE, c_params, &ret) != 0) {
+		// 	return ERROR_TEE_CA_TA_FAIL;
+		// }
 	}
 
 	spin_lock(&imgsensor_drv_lock);
@@ -4959,11 +4959,11 @@ static kal_uint32 control(enum MSDK_SCENARIO_ID_ENUM scenario_id, MSDK_SENSOR_EX
 	c_params.param2 = (void *)sensor_config_data;
 
 	if (imgsensor.enable_secure) {
-		if (imgsensor_ca_invoke_command(IMGSENSOR_TEE_CMD_CONTROL, c_params, &ret) == 0) {
-			return ret;
-		} else {
-			return ERROR_TEE_CA_TA_FAIL;
-		}
+		// if (imgsensor_ca_invoke_command(IMGSENSOR_TEE_CMD_CONTROL, c_params, &ret) == 0) {
+		// 	return ret;
+		// } else {
+		// 	return ERROR_TEE_CA_TA_FAIL;
+		// }
 	}
 
 	#endif
