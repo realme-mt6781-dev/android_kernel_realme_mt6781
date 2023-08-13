@@ -7,6 +7,7 @@
 #define __DEBUG_DRIVER_H__
 
 #include <linux/device.h>
+#include "apusys_device.h"
 
 #define DEBUG_PREFIX "[apusys_dbg]"
 
