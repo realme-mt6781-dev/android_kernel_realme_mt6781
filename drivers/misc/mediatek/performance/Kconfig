@@ -35,6 +35,13 @@ config MTK_CPU_CTRL_CFP
 	  will free CPU frequency ceiling during heavy CPU loading.
 	  This function depends on MTK_LOAD_TRACKER.
 
+config MTK_EAS_CTRL
+	bool "MediaTek EAS control"
+	depends on MTK_CPU_CTRL
+	help
+	  Say Y here to enable MediaTeks EAS control driver.
+	  This driver provides the EAS control interface to userspace.
+
 config MTK_SYSLIMITER
 	bool "MTK system limiter support"
 	depends on MTK_CPU_CTRL
