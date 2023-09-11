@@ -20,12 +20,6 @@ bash <(curl -s https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/
 ls
 cd ..
 fi
-gcc64bin=los-4.9-64/bin/aarch64-linux-android-as
-if ! [ -a $gcc64bin ]; then git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 los-4.9-64
-fi
-gcc32bin=los-4.9-32/bin/arm-linux-androideabi-as
-if ! [ -a $gcc32bin ]; then git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 los-4.9-32
-fi
 read -p "Wanna do dirty build? (Y/N): " build_type
 if [[ $build_type == "N" || $build_type == "n" ]]; then
 echo Deleting out directory and doing clean Build
@@ -47,22 +41,12 @@ fi
 
 make O=out ARCH=arm64 spaced_defconfig
 
-PATH="${PWD}/clang/bin:${PATH}:${PWD}/los-4.9-32/bin:${PATH}:${PWD}/los-4.9-64/bin:${PATH}" \
-make -j$(nproc --all)   O=out \
-                        ARCH=arm64 \
-                        CC="clang" \
-                        CLANG_TRIPLE=aarch64-linux-gnu- \
-                        CROSS_COMPILE="${PWD}/los-4.9-64/bin/aarch64-linux-android-" \
-                        CROSS_COMPILE_ARM32="${PWD}/los-4.9-32/bin/arm-linux-androideabi-" \
-                        LD=ld.lld \
-                        AS=llvm-as \
-                        AR=llvm-ar \
-                        NM=llvm-nm \
-                        LLVM=1 \
-                        LLVM_IAS=1 \
-                        OBJCOPY=llvm-objcopy \
-                        STRIP=llvm-strip \
-                        CONFIG_NO_ERROR_ON_MISMATCH=y 2>&1 | tee error.log 
+PATH="${PWD}/clang/bin:${PATH}" \
+make -j$(nproc --all) O=out \
+                      CC="clang" \
+                      LLVM=1 \
+                      LLVM_IAS=1 \
+                       CONFIG_NO_ERROR_ON_MISMATCH=y 2>&1 | tee error.log 
 }
 
 function zupload()
