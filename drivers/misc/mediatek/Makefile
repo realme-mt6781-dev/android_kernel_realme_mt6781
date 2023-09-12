@@ -213,4 +213,6 @@ obj-$(CONFIG_MTK_GATE_IC) += gate_ic/
 obj-$(CONFIG_MTK_FREQ_HOPPING) += freqhopping/
 obj-$(CONFIG_MTK_TASK_TURBO) += task_turbo/
 obj-$(CONFIG_CAMERA_LDO) += camera_ldo/
-
+obj-y += met_drv_v2/
+obj-y += met_drv_v3/
+obj-y += gpu/
