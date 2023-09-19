@@ -40,15 +40,6 @@ config ZRAM_MEMORY_TRACKING
 
 	  See Documentation/blockdev/zram.txt for more information.
 
-#ifdef OPLUS_FEATURE_ZRAM_OPT
-config OPLUS_ZRAM_OPT
-	bool "oplus zram  optimization"
-	depends on ZRAM
-	default y
-	help
-	oplus zram optimization
-#endif /*OPLUS_FEATURE_ZRAM_OPT*/
-
 config HYBRIDSWAP
 	bool "Enable Hybridswap"
 	depends on MEMCG && ZRAM && !ZRAM_WRITEBACK
