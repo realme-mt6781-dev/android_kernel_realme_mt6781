@@ -464,7 +464,7 @@ static void mtk_nanohub_ipi_handler(int id,
 	if (cmd != NULL)
 		cmd->handler(rsp, len);
 	else {
-		pr_err("IPI_SENSOR cannot find cmd!\n");
+		pr_debug("IPI_SENSOR cannot find cmd!\n");
 #ifdef OPLUS_FEATURE_SENSOR
 		SCP_sensorHub_set_oplus_cmd(rsp,len);
 #endif
