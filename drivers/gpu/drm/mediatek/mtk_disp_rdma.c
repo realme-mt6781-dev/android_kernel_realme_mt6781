@@ -29,9 +29,6 @@
 /* add for ui ready */
 #include "oplus_display_onscreenfingerprint.h"
 #endif
-#ifdef OPLUS_BUG_STABILITY
-#include <soc/oplus/system/oplus_mm_kevent_fb.h>
-#endif
 
 #define DISP_REG_RDMA_INT_ENABLE 0x0000
 #define DISP_REG_RDMA_INT_STATUS 0x0004
@@ -406,11 +403,6 @@ static irqreturn_t mtk_disp_rdma_irq_handler(int irq, void *dev_id)
 				DDPAEE("%s: underflow! cnt=%d\n",
 				       mtk_dump_comp_str(rdma),
 				       priv->underflow_cnt);
-				#ifdef OPLUS_BUG_STABILITY
-				if ((priv->underflow_cnt) < 5) {
-					mm_fb_display_kevent("DisplayDriverID@@502$$", MM_FB_KEY_RATELIMIT_1H, "underflow cnt=%d", priv->underflow_cnt);
-				}
-				#endif
 			}
 		}
 
