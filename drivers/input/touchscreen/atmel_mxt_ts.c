@@ -1810,7 +1810,7 @@ static int mxt_read_info_block(struct mxt_data *data)
 		dev_err(&client->dev, "Error %d parsing object table\n", error);
 		/* If info block already allocated, free it */
 		if (data->raw_info_block)
-			mxt_free_object_table(data);
+		mxt_free_object_table(data);
 		goto err_free_mem;
 	}
 
