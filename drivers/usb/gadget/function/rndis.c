@@ -1088,6 +1088,7 @@ void rndis_free_response(struct rndis_params *params, u8 *buf)
 			kfree(r);
 		}
 	}
+	spin_unlock(&params->resp_lock);
 }
 EXPORT_SYMBOL_GPL(rndis_free_response);
 
@@ -1103,10 +1104,12 @@ u8 *rndis_get_next_response(struct rndis_params *params, u32 *length)
 		if (!r->send) {
 			r->send = 1;
 			*length = r->length;
+			spin_unlock(&params->resp_lock);
 			return r->buf;
 		}
 	}
 
+	spin_unlock(&params->resp_lock);
 	return NULL;
 }
 EXPORT_SYMBOL_GPL(rndis_get_next_response);
