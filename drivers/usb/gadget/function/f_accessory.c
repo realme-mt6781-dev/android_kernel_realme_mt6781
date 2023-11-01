@@ -1009,6 +1009,7 @@ err:
 	return value;
 }
 EXPORT_SYMBOL_GPL(acc_ctrlrequest);
+
 int acc_ctrlrequest_composite(struct usb_composite_dev *cdev,
 			      const struct usb_ctrlrequest *ctrl)
 {
