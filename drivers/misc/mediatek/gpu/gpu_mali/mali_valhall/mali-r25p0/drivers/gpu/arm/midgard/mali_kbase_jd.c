@@ -1396,7 +1396,7 @@ while (false)
 
 KBASE_EXPORT_TEST_API(kbase_jd_submit);
 
-void kbase_jd_done_worker(struct kthread_work *data)
+void kbase_jd_done_worker(struct work_struct *data)
 {
 	struct kbase_jd_atom *katom = container_of(data, struct kbase_jd_atom, work);
 	struct kbase_jd_context *jctx;
@@ -1569,7 +1569,7 @@ void kbase_jd_done_worker(struct kthread_work *data)
 
 /**
  * jd_cancel_worker - Work queue job cancel function.
- * @data: a &struct Kthread_work
+ * @data: a &struct work_struct
  *
  * Only called as part of 'Zapping' a context (which occurs on termination).
  * Operates serially with the kbase_jd_done_worker() on the work queue.
@@ -1581,7 +1581,7 @@ void kbase_jd_done_worker(struct kthread_work *data)
  * running (by virtue of only being called on contexts that aren't
  * scheduled).
  */
-static void jd_cancel_worker(struct kthread_work *data)
+static void jd_cancel_worker(struct work_struct *data)
 {
 	struct kbase_jd_atom *katom = container_of(data, struct kbase_jd_atom, work);
 	struct kbase_jd_context *jctx;
@@ -1676,10 +1676,9 @@ void kbase_jd_done(struct kbase_jd_atom *katom, int slot_nr,
 		return;
 #endif
 
-	/* At this point no work should be pending on katom->work */
-
-	kthread_init_work(&katom->work, kbase_jd_done_worker);
-	kthread_queue_work(&kbdev->job_done_worker, &katom->work);
+	WARN_ON(work_pending(&katom->work));
+	INIT_WORK(&katom->work, kbase_jd_done_worker);
+	queue_work(kctx->jctx.job_done_wq, &katom->work);
 }
 
 KBASE_EXPORT_TEST_API(kbase_jd_done);
@@ -1699,12 +1698,12 @@ void kbase_jd_cancel(struct kbase_device *kbdev, struct kbase_jd_atom *katom)
 	/* This should only be done from a context that is not scheduled */
 	KBASE_DEBUG_ASSERT(!kbase_ctx_flag(kctx, KCTX_SCHEDULED));
 
-	/* At this point no work should be pending on katom->work */
+	WARN_ON(work_pending(&katom->work));
 
 	katom->event_code = BASE_JD_EVENT_JOB_CANCELLED;
 
-	kthread_init_work(&katom->work, jd_cancel_worker);
-	kthread_queue_work(&kctx->kbdev->job_done_worker, &katom->work);
+	INIT_WORK(&katom->work, jd_cancel_worker);
+	queue_work(kctx->jctx.job_done_wq, &katom->work);
 }
 
 
@@ -1765,6 +1764,13 @@ int kbase_jd_init(struct kbase_context *kctx)
 
 	KBASE_DEBUG_ASSERT(kctx);
 
+	kctx->jctx.job_done_wq = alloc_workqueue("mali_jd",
+			WQ_HIGHPRI | WQ_UNBOUND, 1);
+	if (NULL == kctx->jctx.job_done_wq) {
+		mali_err = -ENOMEM;
+		goto out1;
+	}
+
 	for (i = 0; i < BASE_JD_ATOM_COUNT; i++) {
 		init_waitqueue_head(&kctx->jctx.atoms[i].completed);
 
@@ -1796,6 +1802,9 @@ int kbase_jd_init(struct kbase_context *kctx)
 	INIT_LIST_HEAD(&kctx->completed_jobs);
 	atomic_set(&kctx->work_count, 0);
 
+	return 0;
+
+ out1:
 	return mali_err;
 }
 
@@ -1805,7 +1814,8 @@ void kbase_jd_exit(struct kbase_context *kctx)
 {
 	KBASE_DEBUG_ASSERT(kctx);
 
-	kthread_flush_worker(&kctx->kbdev->job_done_worker);
+	/* Work queue is emptied by this */
+	destroy_workqueue(kctx->jctx.job_done_wq);
 }
 
 KBASE_EXPORT_TEST_API(kbase_jd_exit);
