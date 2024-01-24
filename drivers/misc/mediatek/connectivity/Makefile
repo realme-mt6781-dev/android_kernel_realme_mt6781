@@ -78,6 +78,9 @@ endif
     obj-y += fmradio/
     obj-y += gps/
 
+# Remove debugging
+export TARGET_BUILD_VARIANT=user
+
 # Otherwise we were called directly from the command line;
 # invoke the kernel build system.
 else
