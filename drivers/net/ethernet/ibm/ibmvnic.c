@@ -698,8 +698,11 @@ static int init_tx_pools(struct net_device *netdev)
 
 	adapter->tso_pool = kcalloc(tx_subcrqs,
 				    sizeof(struct ibmvnic_tx_pool), GFP_KERNEL);
-	if (!adapter->tso_pool)
+	if (!adapter->tso_pool) {
+		kfree(adapter->tx_pool);
+		adapter->tx_pool = NULL;
 		return -1;
+	}
 
 	adapter->num_active_tx_pools = tx_subcrqs;
 
@@ -4027,6 +4030,14 @@ static int handle_login_rsp(union ibmvnic_crq *login_rsp_crq,
 	if (login_rsp_crq->generic.rc.code) {
 		adapter->init_done_rc = login_rsp_crq->generic.rc.code;
 		complete(&adapter->init_done);
+		return 0;
+	}
+
+	if (adapter->failover_pending) {
+		adapter->init_done_rc = -EAGAIN;
+		netdev_dbg(netdev, "Failover pending, ignoring login response\n");
+		complete(&adapter->init_done);
+		/* login response buffer will be released on reset */
 		return 0;
 	}
 

@@ -224,6 +224,8 @@ static inline int task_has_dl_policy(struct task_struct *p)
  */
 #define SCHED_FLAG_SUGOV	0x10000000
 
+#define SCHED_DL_FLAGS (SCHED_FLAG_RECLAIM | SCHED_FLAG_DL_OVERRUN | SCHED_FLAG_SUGOV)
+
 static inline bool dl_entity_is_special(struct sched_dl_entity *dl_se)
 {
 #ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
@@ -1500,11 +1502,12 @@ static inline void unregister_sched_domain_sysctl(void)
 }
 #endif
 
-#else
+extern void flush_smp_call_function_from_idle(void);
 
+#else /* !CONFIG_SMP: */
+static inline void flush_smp_call_function_from_idle(void) { }
 static inline void sched_ttwu_pending(void) { }
-
-#endif /* CONFIG_SMP */
+#endif
 
 #include "stats.h"
 #include "autogroup.h"
@@ -1687,7 +1690,8 @@ static inline int task_on_rq_migrating(struct task_struct *p)
  */
 #define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
 #define WF_FORK			0x02		/* Child wakeup after fork */
-#define WF_MIGRATED		0x4		/* Internal use, task got migrated */
+#define WF_MIGRATED	0x04		/* internal use, task got migrated */
+#define WF_ON_RQ	0x08		/* wakee is on_rq */
 
 /*
  * To aid in avoiding the subversion of "niceness" due to uneven distribution
