@@ -36,7 +36,7 @@ ssize_t gpu_clock_show(struct kobject *kobj,
 
 	gpu_freq = mt_gpufreq_get_freq_by_idx(mt_gpufreq_get_cur_freq_index());
 
-	return scnprintf(buf, PAGE_SIZE, "%u\n", gpu_freq);
+	return scnprintf(buf, PAGE_SIZE, "%u\n", gpu_freq / 1000);
 }
 static KOBJ_ATTR_RO(gpu_clock);
 
@@ -58,7 +58,7 @@ ssize_t gpu_freq_table_show(struct kobject *kobj,
 
 	for (idx = max_opp_idx; count < table_num; count++) {
 		length = scnprintf(temp + pos, 1024 - pos,
-				"%u ", power_table[idx + count].gpufreq_khz);
+				"%u ", power_table[idx + count].gpufreq_khz / 1000);
 		pos += length;
 	}
 
@@ -84,7 +84,7 @@ ssize_t gpu_max_clock_show(struct kobject *kobj,
 	max_clock = (max_clock_custom < max_clock) ?
 			max_clock_custom : max_clock;
 
-	return scnprintf(buf, PAGE_SIZE, "%u\n", max_clock);
+	return scnprintf(buf, PAGE_SIZE, "%u\n", max_clock / 1000);
 }
 
 static ssize_t gpu_max_clock_store(struct kobject *kobj,
@@ -137,7 +137,7 @@ ssize_t gpu_min_clock_show(struct kobject *kobj,
 	min_clock = (min_clock_custom > min_clock) ?
 			min_clock_custom : min_clock;
 
-	return scnprintf(buf, PAGE_SIZE, "%lu\n", min_clock);
+	return scnprintf(buf, PAGE_SIZE, "%lu\n", min_clock / 1000);
 }
 
 static ssize_t gpu_min_clock_store(struct kobject *kobj,
