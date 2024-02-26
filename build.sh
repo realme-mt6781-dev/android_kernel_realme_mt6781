@@ -57,9 +57,8 @@ then
 echo  " Failed to compile zImage, fix the errors first "
 else
 echo -e " Build succesful, generating flashable zip now "
-anykernelbin=AnyKernel/anykernel.sh
-if ! [ -a $anykernelbin ]; then git clone --depth=1 https://github.com/HELLINFIX/AnyKernel3 AnyKernel
-fi
+rm -rf AnyKernel
+git clone --depth=1 https://github.com/HELLINFIX/AnyKernel3 AnyKernel
 cp out/arch/arm64/boot/Image.gz-dtb AnyKernel
 cd AnyKernel
 zip -r9 InfixKernel-spaced-OSS-Kernel.zip *
