@@ -35,7 +35,6 @@
 #include <linux/cpuhotplug.h>
 
 #include "zram_drv.h"
-#include "zram_drv_internal.h"
 
 static DEFINE_IDR(zram_index_idr);
 /* idr index must be protected */
@@ -62,9 +61,77 @@ static int zram_slot_trylock(struct zram *zram, u32 index)
 	return bit_spin_trylock(ZRAM_LOCK, &zram->table[index].flags);
 }
 
+static void zram_slot_lock(struct zram *zram, u32 index)
+{
+	bit_spin_lock(ZRAM_LOCK, &zram->table[index].flags);
+}
+
+static void zram_slot_unlock(struct zram *zram, u32 index)
+{
+	bit_spin_unlock(ZRAM_LOCK, &zram->table[index].flags);
+}
+
+static inline bool init_done(struct zram *zram)
+{
+	return zram->disksize;
+}
+
+static inline struct zram *dev_to_zram(struct device *dev)
+{
+	return (struct zram *)dev_to_disk(dev)->private_data;
+}
+
+static unsigned long zram_get_handle(struct zram *zram, u32 index)
+{
+	return zram->table[index].handle;
+}
+
+static void zram_set_handle(struct zram *zram, u32 index, unsigned long handle)
+{
+	zram->table[index].handle = handle;
+}
+
+/* flag operations require table entry bit_spin_lock() being held */
+static bool zram_test_flag(struct zram *zram, u32 index,
+			enum zram_pageflags flag)
+{
+	return zram->table[index].flags & BIT(flag);
+}
+
+static void zram_set_flag(struct zram *zram, u32 index,
+			enum zram_pageflags flag)
+{
+	zram->table[index].flags |= BIT(flag);
+}
+
+static void zram_clear_flag(struct zram *zram, u32 index,
+			enum zram_pageflags flag)
+{
+	zram->table[index].flags &= ~BIT(flag);
+}
+
+static inline void zram_set_element(struct zram *zram, u32 index,
+			unsigned long element)
+{
+	zram->table[index].element = element;
+}
+
 static unsigned long zram_get_element(struct zram *zram, u32 index)
 {
 	return zram->table[index].element;
+}
+
+static size_t zram_get_obj_size(struct zram *zram, u32 index)
+{
+	return zram->table[index].flags & (BIT(ZRAM_FLAG_SHIFT) - 1);
+}
+
+static void zram_set_obj_size(struct zram *zram,
+					u32 index, size_t size)
+{
+	unsigned long flags = zram->table[index].flags >> ZRAM_FLAG_SHIFT;
+
+	zram->table[index].flags = (flags << ZRAM_FLAG_SHIFT) | size;
 }
 
 static inline bool zram_allocated(struct zram *zram, u32 index)
@@ -850,7 +917,7 @@ static ssize_t read_block_state(struct file *file, char __user *buf,
 			zram_test_flag(zram, index, ZRAM_HUGE) ? 'h' : '.',
 			zram_test_flag(zram, index, ZRAM_IDLE) ? 'i' : '.');
 
-		if (count < copied) {
+		if (count <= copied) {
 			zram_slot_unlock(zram, index);
 			break;
 		}
@@ -1123,7 +1190,6 @@ static void zram_free_page(struct zram *zram, size_t index)
 #ifdef CONFIG_ZRAM_MEMORY_TRACKING
 	zram->table[index].ac_time = 0;
 #endif
-
 	if (zram_test_flag(zram, index, ZRAM_IDLE))
 		zram_clear_flag(zram, index, ZRAM_IDLE);
 
@@ -1135,7 +1201,6 @@ static void zram_free_page(struct zram *zram, size_t index)
 	if (zram_test_flag(zram, index, ZRAM_WB)) {
 		zram_clear_flag(zram, index, ZRAM_WB);
 		free_block_bdev(zram, zram_get_element(zram, index));
-		atomic64_dec(&zram->stats.pages_stored);
 		goto out;
 	}
 
@@ -1146,7 +1211,6 @@ static void zram_free_page(struct zram *zram, size_t index)
 	if (zram_test_flag(zram, index, ZRAM_SAME)) {
 		zram_clear_flag(zram, index, ZRAM_SAME);
 		atomic64_dec(&zram->stats.same_pages);
-		atomic64_dec(&zram->stats.pages_stored);
 		goto out;
 	}
 
@@ -1158,9 +1222,8 @@ static void zram_free_page(struct zram *zram, size_t index)
 
 	atomic64_sub(zram_get_obj_size(zram, index),
 			&zram->stats.compr_data_size);
-	atomic64_dec(&zram->stats.pages_stored);
-
 out:
+	atomic64_dec(&zram->stats.pages_stored);
 	zram_set_handle(zram, index, 0);
 	zram_set_obj_size(zram, index, 0);
 	WARN_ON_ONCE(zram->table[index].flags &
@@ -1176,7 +1239,6 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
 	void *src, *dst;
 
 	zram_slot_lock(zram, index);
-
 	if (zram_test_flag(zram, index, ZRAM_WB)) {
 		struct bio_vec bvec;
 
@@ -1318,15 +1380,13 @@ compress_again:
 				__GFP_KSWAPD_RECLAIM |
 				__GFP_NOWARN |
 				__GFP_HIGHMEM |
-				__GFP_MOVABLE |
-				__GFP_CMA);
+				__GFP_MOVABLE);
 	if (!handle) {
 		zcomp_stream_put(zram->comp);
 		atomic64_inc(&zram->stats.writestall);
 		handle = zs_malloc(zram->mem_pool, comp_len,
 				GFP_NOIO | __GFP_HIGHMEM |
-				__GFP_MOVABLE | __GFP_CMA |
-				GFP_ATOMIC | ___GFP_HIGH_ATOMIC_ZRAM);
+				__GFP_MOVABLE);
 		if (handle)
 			goto compress_again;
 		return -ENOMEM;
@@ -1373,7 +1433,6 @@ out:
 		zram_set_handle(zram, index, handle);
 		zram_set_obj_size(zram, index, comp_len);
 	}
-
 	zram_slot_unlock(zram, index);
 
 	/* Update stats */
@@ -1959,7 +2018,6 @@ static int zram_remove(struct zram *zram)
 	del_gendisk(zram->disk);
 	blk_cleanup_queue(zram->disk->queue);
 	put_disk(zram->disk);
-
 	kfree(zram);
 	return 0;
 }
