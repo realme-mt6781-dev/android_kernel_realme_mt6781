@@ -194,9 +194,6 @@ int vm_swappiness_threshold2 = 0;
 int swappiness_threshold1_size = 0;
 int swappiness_threshold2_size = 0;
 #endif
-#ifdef CONFIG_HYBRIDSWAP_SWAPD
-static int hybridswapd_swappiness = 200;
-#endif
 
 /*
  * The total number of pages which are beyond the high watermark within all
@@ -2549,14 +2546,6 @@ enum scan_balance {
 	SCAN_ANON,
 	SCAN_FILE,
 };
-
-#ifdef CONFIG_HYBRIDSWAP_SWAPD
-extern bool free_swap_is_low(void);
-bool __weak free_swap_is_low(void)
-{
-	return false;
-}
-#endif
 
 /*
  * Determine how aggressively the anon and file LRU lists should be
