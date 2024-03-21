@@ -1695,6 +1695,8 @@ static void kbase_mmu_flush_invalidate_as(struct kbase_device *kbdev,
 	u32 op;
 	bool gpu_powered;
 	unsigned long flags;
+	unsigned long irq_flags = 0;
+	bool powered_on;
 
 	spin_lock_irqsave(&kbdev->hwaccess_lock, flags);
 	gpu_powered = kbdev->pm.backend.gpu_powered;
@@ -1711,13 +1713,14 @@ static void kbase_mmu_flush_invalidate_as(struct kbase_device *kbdev,
 	if (!gpu_powered)
 		return;
 
-	if (kbase_pm_context_active_handle_suspend(kbdev,
-				KBASE_PM_SUSPEND_HANDLER_DONT_REACTIVATE)) {
-		/* GPU has just been powered off due to system suspend.
-		 * So again, no need to perform flush/invalidate.
-		 */
+	/* Flush/invalidate is only required if the GPU is powered on */
+	spin_lock_irqsave(&kbdev->hwaccess_lock, irq_flags);
+	powered_on = kbdev->pm.backend.gpu_powered;
+	spin_unlock_irqrestore(&kbdev->hwaccess_lock, irq_flags);
+
+	if (!powered_on || kbase_pm_context_active_handle_suspend(kbdev,
+		KBASE_PM_SUSPEND_HANDLER_DONT_REACTIVATE))
 		return;
-	}
 
 	/* AS transaction begin */
 	mutex_lock(&kbdev->mmu_hw_mutex);
